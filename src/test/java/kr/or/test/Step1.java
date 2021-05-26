@@ -5,6 +5,12 @@ package kr.or.test;
  *
  */
 public class Step1 {
+	public void Step1() { //클래스명과 같은 이름의 메소드를 생성자 메소드가 자동으로 만들어줌.
+		//중요한 이유는 다른 클래스에서 Step1을 객체로 만들 때 생성자 메소드가 필요함.
+		//Step aaa = new Step1();
+		//자바앱에서는 객체를 만들 때 필수
+		//단, 스프링에선 @Inject로 객체를 만들어서 사용
+	}
 	//멤버변수(전역변수)? Step1클래스에 영향을 모두 주는 변수.
 	//필드변수(내부변수)? main메소드 내부에서만 영향을 주는 변수.
 	//private String name; //멤버변수 사용 예, Step2클래스에서 실습예정.
