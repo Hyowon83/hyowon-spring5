@@ -39,13 +39,13 @@ public class Step1 {
 		// for 반복문으로 3개를 한번에 출력.
 		int dataLength = names.length;
 		for(int i=0;i<dataLength;i++) {
-			System.out.println("입력하신 회원의 이름은 "+names[i]+"님, 나이는 "+ages[i]+", 폰번호는"+phoneNums[i]+"입니다.");
+			System.out.println("1)입력하신 회원의 이름은 "+names[i]+"님, 나이는 "+ages[i]+", 폰번호는"+phoneNums[i]+"입니다.");
 		};
 	}
 
 	private static void printMember(String name, int age, String phoneNum) {
 		// printMember(파라미터1,param2,param3)
-		System.out.println("입력하신 회원의 이름은 "+name+"님, 나이는 "+age+", 폰번호는"+phoneNum+"입니다.");
+		System.out.println("2)입력하신 회원의 이름은 "+name+"님, 나이는 "+age+", 폰번호는"+phoneNum+"입니다.");
 		// println 메서드는 출력 후 줄바꿈 명령 실행 ln = new line
 	}
 }
