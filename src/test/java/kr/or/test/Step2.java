@@ -56,6 +56,13 @@ public class Step2 {
 		//출력도 메소드를 바로 호출하지 않고, 외부 클래스에서 객체로 만들어서 메소드를 호출.
 		MemberService memberService = new MemberService();
 		memberService.printMember(members);
+		//겍체로 만들면, 호출(runtime)시 메모리에 로딩됩니다. -> 실행이 끝나면 반환.
+		//외부클래스(MemberService)는 아래처럼 직접 접근해서 메소드나 변수를 사용 할 수 없음.
+		//외부클래스로 접근하려면, 객체(실행가능한=메모리로딩(memberService))로 만들어야함.
+		//혹은 밑의 클래스에 (public static void) static 예약어를 만든다면 컴파일시 메모리에 로딩(객체가 된다는 뜻)이 되어 사용 할 수 있음.
+		//그러나 매번 static으로 만들면 메모리가 가득차서 프로그램실핼리 느려지거나 멈춤.
+		//MemberService.printMember(members);
+		memberService = null; //메모리에서 오브젝트를 삭제하는 명령
 	}
 }
 class MemberService {

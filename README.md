@@ -1,3 +1,26 @@
+####202010528(금) 작업예정
+- 오라클 11g ExpressEdition 설치예정. OracleXE112_Win64.zip
+- SQL디벨로퍼를 다운받아서 압춘풀기 - ERD제작 예정
+- SQL(StructuredQueryLanguage): 구조화된 질의 언어(오라클서버) -> 답변
+- QueryString: URL에서 전송하는 값(서버에 질의문)을 문장으로 저장한 내용. ?로 시작.
+- CommendLineInterface: SQL*Plus 터미널화면으로 SQL쿼리실행 X.
+- GrapicUserInter: SQL디벨러퍼 윈도우 화면 에디터에서 SQL쿼리 실행 O.
+- SQL Developer 이 프로그램으로 ERD 다이어그램 그림으로 프로젝트 구조 제작.
+- EntityRelationDiagram: 테이블관계도형,(아래)
+- 첨부파일(자식)->게시판테이블(부모)<-댓글테이블(자식)
+- 프로젝트진행: 발주(클라이언트) -> 수주(개발사) -> 디자인UI(Client-Dev) -> ERD(이사나 팀장급) -> 코딩시작(ERD보면서 UI소스에 프로그램 입히기)
+- ERD에서 SQL쿼리가 생성 -> 물리테이블을 생성
+-----------------------------------------------------------------------
+- 자바앱에서는 객체를 생성 후 사용이 끝나면, 메모리에서 삭제하는 명령이 필수.
+- 객체를 메모리에서 삭제: Object = null; Object.close();
+- 스프링에서는 내장된 가비지 컬렉터(garbage쓰레기수집가)가 자동실행돼서 자동으로 사용하지 않는 객체를 지워줌.
+- 위와 같이 개발자가 하던 메모리관리를 스프링의 대신 = IoC(Inversion Of Control)제어의 역전. 스프링 특징 3가지(IoC, AOP, DI)
+- 수업시작전, static메서드와 객체의 멤버매서드 비교설명
+- Step2클래스에서 MeberService 클래스에 직접접근해서 메서드를 실행하려면 static으로 변경(컴파일시 실행가능한 상태로됨=메모리에 로딩)해야 함. 
+대신, memberServie객체을 이용해서 메서드에 접근할때는 (호출시=런타임시 실행이가능한 상태로됨=메모리에 로딩)
+- 클래스와 상속에 대해서 이론 및 실습
+- https://github.com/miniplugin/spring5-kimilguk/blob/master/src/test/java/kr/or/test/ClassApp.java
+
 ####20210527(목) 작업예정
 - 3장 객체와 클래스부터 시작
 - 스프링에서는 클래스 상속(extends) 보다는 인터페이스(implements)를 더 많이 사용하기 때문에 상속은 보기 힘들다.
