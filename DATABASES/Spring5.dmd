@@ -5,4 +5,9 @@
 <ownerDesignName>Spring5</ownerDesignName>
 <capitalNames>false</capitalNames>
 <designId>BF5686B7-1951-5166-CC71-F853A065CE15</designId>
+<usedDesignStorageDescriptors>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="975704AE-0460-7B5E-9F8F-D495CC8DB36F">
+<designStoragePath>C:\egov\workspace\hyowon-spring5\DATABASES</designStoragePath>
+</designDescr>
+</usedDesignStorageDescriptors>
 </OSDM_Design>
