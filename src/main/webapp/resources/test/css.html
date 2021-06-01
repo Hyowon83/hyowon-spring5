@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <!-- 페이지언어설정 : Unicode Type Format -8비트 약자 -->
+    <!-- 다국어 지원 사이트에서 필수 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 실습</title>
+    <!-- 나눔고딕 외부 글꼴 사용하기 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+<style>
+    /* 03 선택자 종류 
+        범용선택자 : * (별표:애스터리스크)
+        태그선택자 : h1, h2, p, div, header, article, footer 등등
+        class선택자 : .class이름 (특징:중복사용 가능)
+        id선택자 : #id이름 (특징:중복사용 불가능 |오동작 원인)
+        가상선택자 : ::after ::before, :before, :after
+        가상요소(Element-가상태그) : :hover (사용 예 = a:hover)
+    */
+    h1 { background-color: skyblue; }
+    div * { color: rgb(93, 255, 101) }
+    .box-one, .box-two { background-color: tomato;}
+    #box-four, #box-five { background-color: yellow;}
+    .box-one p:after { content:'   +addadd';}
+    .box-one p::before {content: 'add+  ';}
+    a:hover {color: white;}
+    /* 크기단위 font크기, img크기 단위종류 3가지 : ~px, ~em(배수), ~rem(root기반 배수) */
+    .box-one {
+        font-size: 8px;
+        /* font-size: 1.5em;  */
+        /* 웹브라우저 기본 폰트 사이즈 : 16px = 1em, 16*1.5px = 1.5em */
+        /* font-size: 1.5rem; */
+        }
+    .box-one p {
+        /* 웹브라우저 기본폰트인 16px의 1.5배 아니고, 부모요소의 1.5배 (8px의 1.5배) */
+        font-size: 1.5em;
+        font-size: 1.5rem;
+        /* 위에서부터 해석하는 방식 : 인터프리터형 = 자바스크립트 */
+    }
+    .box-one{
+        width: 200px;
+        height: 200px;
+        background-color: green;
+        padding: 20px; /* 안쪽여백 */
+        margin: 20px 10px 30px 80px; 
+        /* 바깥여백 : 4가지방향 12시부터 시계방향으로 이동(상 우 하 좌) */
+        margin: 30px 60px; /* 2가지방향 (상하 30, 좌우 60) */
+        border: 10px solid black;
+        box-sizing: border-box;
+        /* 가로를 가운데로 정렬하는 방법, auto */
+        margin: 0px;
+        margin: 0px auto; /* 상하 0px, 좌우 auto */
+        margin: 0px;
+        position: absolute; /* 다른 태그와 겹치기 가능(절대위치) <-> relative */
+        margin-left: 20px;
+        margin-top: 20px;
+        position: fixed; /* 고정위치 (클릭하면 위치로 이동)*/
+    }
+    .box-two{
+        width: 200px;
+        height: 200px;
+        background-color: red;
+        box-sizing: border-box;/* 필수 */
+    }
+</style>
+</head>
+<body>
+     <h1>헬로 CSS</h1>
+     <div class="box-one"><p style="color: white;">
+        <a href="#">상단으로 이동</a></p></div>
+     <div class="box-two"><a href="#">two two two</a></div>
+     <div class="box-three">three</div>
+     <div id="box-four">four</div>
+     <div id="box-five">five</div>
+    <!-- 
+        10 크롬 확장프로그램으로 컬러 피커 사용해보기
+        09 구글 폰트 사용하기: 나눔고딕체 사용
+        08 위치: 고정, 절대위치, 상대위치(기준)
+        07 정렬: 가로 가운데정렬
+        06 테두리크기: 여백(안쪽 패딩, 바깥쪽 마진)
+        05 박스크기: 박스크기에 테두리크기,패딩크기 무시
+        04 크기 단위: px, em(부모영역의 2배), rem(루트영역의 2배)
+        03 선택자 종류 사용
+        02 CSS용어 설명: h${헬로 CSS}*6
+            - Cascade Style Sheet 계층형 스타일 표
+            - 처음 할 때 헷갈리는 부분 : 계단형 영역 선택/경로(path:상대경로, 절대경로)
+        01 css 적용하는 3가지 방법 확인, 내부css, 외부css, 인라인css
+     -->
+     
+
+     <p><span style="color: tomato;">Lorem ipsum</span> dolor sit amet consectetur adipisicing elit. Quas nesciunt ipsum sed reprehenderit ipsam rem sapiente voluptatibus labore quos asperiores recusandae cum repudiandae fugiat odio enim ipsa aliquid cupiditate, earum excepturi eius est impedit! Nemo dolore accusantium pariatur non, blanditiis amet, nesciunt quo quod ipsa in iusto porro, deserunt quisquam ad quibusdam totam error quos consequatur repellat quaerat tenetur at fugit optio! Molestiae autem perferendis dignissimos non nisi! Suscipit excepturi qui blanditiis similique reiciendis incidunt quas unde, repellat eius corrupti. Id nobis in nisi ipsam exercitationem rem ipsum nulla dolores aspernatur ratione et obcaecati, aliquid molestiae voluptas asperiores doloribus optio?
+    dolor sit amet consectetur adipisicing elit. Quas nesciunt ipsum sed reprehenderit ipsam rem sapiente voluptatibus labore quos asperiores recusandae cum repudiandae fugiat odio enim ipsa aliquid cupiditate, earum excepturi eius est impedit! Nemo dolore accusantium pariatur non, blanditiis amet, nesciunt quo quod ipsa in iusto porro, deserunt quisquam ad quibusdam totam error quos consequatur repellat quaerat tenetur at fugit optio! Molestiae autem perferendis dignissimos non nisi! Suscipit excepturi qui blanditiis similique reiciendis incidunt quas unde, repellat eius corrupti. Id nobis in nisi ipsam exercitationem rem ipsum nulla dolores aspernatur ratione et obcaecati, aliquid molestiae voluptas asperiores doloribus optio?</p>
+    <p><span style="color: tomato;">Lorem ipsum</span> dolor sit amet consectetur adipisicing elit. Quas nesciunt ipsum sed reprehenderit ipsam rem sapiente voluptatibus labore quos asperiores recusandae cum repudiandae fugiat odio enim ipsa aliquid cupiditate, earum excepturi eius est impedit! Nemo dolore accusantium pariatur non, blanditiis amet, nesciunt quo quod ipsa in iusto porro, deserunt quisquam ad quibusdam totam error quos consequatur repellat quaerat tenetur at fugit optio! Molestiae autem perferendis dignissimos non nisi! Suscipit excepturi qui blanditiis similique reiciendis incidunt quas unde, repellat eius corrupti. Id nobis in nisi ipsam exercitationem rem ipsum nulla dolores aspernatur ratione et obcaecati, aliquid molestiae voluptas asperiores doloribus optio?
+        dolor sit amet consectetur adipisicing elit. Quas nesciunt ipsum sed reprehenderit ipsam rem sapiente voluptatibus labore quos asperiores recusandae cum repudiandae fugiat odio enim ipsa aliquid cupiditate, earum excepturi eius est impedit! Nemo dolore accusantium pariatur non, blanditiis amet, nesciunt quo quod ipsa in iusto porro, deserunt quisquam ad quibusdam totam error quos consequatur repellat quaerat tenetur at fugit optio! Molestiae autem perferendis dignissimos non nisi! Suscipit excepturi qui blanditiis similique reiciendis incidunt quas unde, repellat eius corrupti. Id nobis in nisi ipsam exercitationem rem ipsum nulla dolores aspernatur ratione et obcaecati, aliquid molestiae voluptas asperiores doloribus optio?</p>
+</body>
+</html>
