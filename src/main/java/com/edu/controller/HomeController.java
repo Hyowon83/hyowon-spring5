@@ -1,37 +1,41 @@
 package com.edu.controller;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+//외부 라이브러리(모듈) 사용= import
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 
 /**
  * 이 클래스는 MVC웹 프로젝트(스프링)를 최초로 생성시 자동으로 생성되는 클래스입니다.
  * 웹브라우저의 요청사항을 view단(jsp)에 연결시켜주는 클래스가 @Controller
  * 스프링에서 관리하는 클래스를 스프링빈(콩) = 스프링빈을 명시 @Controller 애노테이션
  * Beans(콩들) 그래프로 이 프로젝트의 규모 확인 가능
- * 스프링이 관리하는 클래스는 파일아이콘에 S가 붙는다.
+ * 스프링이 관리하는 클래스(=스프링빈)는 파일아이콘에 S가 붙는다.
  */
-                        
+
 @Controller
 public class HomeController {
 	//스프링빈(클래스)에서는 logger로 디버그 합니다. ( = 로거 객체를 만든다)
-	private Logger logger = Logger
+	//로그 중 slf4j(SpringLogForJAVA)
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	/**
-	 * Simply selects the home view to render by returning its name.
+	 * 사용자요청(웹브라우저)을 받아서=@RequestMapping인터페이스를 사용해서 메소드명을 스프링이 구현
+	 * , router(루트아님)
+	 * return값으로 view(jsp)를 선택해서 화면에 결과를 변수로 담아서 화면에 전송 후 결과를  표시(렌더링)한다.
+	 * 폼(자료) 전송시 post(자료숨김), get(자료노출-URL쿼리스트링)
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-		logger.info("Welcome home! The client locale is {}.", locale);
-		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		
-		String formattedDate = dateFormat.format(date);
-		
-		model.addAttribute("serverTime", formattedDate );
-		
-		return "home";
+	public String home(Model model) { //콜백메소드(자동실행됨)
+		String jspVar = "@서비스(DB)에서 처리한 결과";	
+		model.addAttribute("jspObject", jspVar );
+		logger.info("디버그 스프링로고사용: "+ jspVar); //System.out 대신 logger객체를 사용
+		//home.jsp파일로 자료를 전송(스프링)하는 기능 = model 인터페이스 객체(스프링이처리함)에 내용만 채우면 됨.
+		return "home/index"; //확장자 .jsp가 생략되어있음. 
 	}
 	
 }
