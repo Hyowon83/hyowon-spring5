@@ -3,7 +3,9 @@ package com.edu.test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -40,8 +42,27 @@ public class DataSourceTest {
 		Connection connection = null;
 		connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/XE","XE","apmsetup");
 		logger.debug("데이터베이스 직접 접속이 성공 하였습니다.DB종류는 : " + connection.getMetaData().getDatabaseProductName());
-		
-		
+		//직접 쿼리를 날립니다. 날리기전 쿼리문장 객체생성 statment
+		Statement stmt = connection.createStatement();
+		//위 쿼리문장객체를 만드는 이유? 보안(SQL인젝션공격)
+		//stmt 객체가 없으면, 개발자가 SQL인젝션 방지코딩을 넣어야합니다.
+		//Insert쿼리문장 만듦(아래)
+		//예전 방식으로 더미데이터(샘플데이터)를 100개를 입력합니다.
+		/*
+		 * for(int cnt=0;cnt<100;cnt++) {
+		 * stmt.executeQuery("insert into dept02 values("+cnt+",'디자인부','경기도')"); }
+		 */
+		//인서트, 업데이트, 삭제시 sql디벨로퍼에서는 커밋이 될 수 있지만 
+		//테이블에 입력되어있는 레코드셋을 select 쿼리 stmt문장으로 가져옴(아래)
+		ResultSet rs = stmt.executeQuery("select * from dept order by deptno");
+		//위에서 저장된 rs객체를 반복문으로 출력(아래)
+		while(rs.next()) { 
+			//rs객체의 레코드가 없을때까지 반복
+			logger.debug(rs.getString("deptno")+" "+rs.getString("dname")+
+					" "+rs.getString("loc"));
+		}
+		stmt = null;
+		rs = null;
 		connection = null; //메모리 초기화
 	}
 	
