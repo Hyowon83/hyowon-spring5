@@ -21,7 +21,7 @@ public class MemberVO {
 	private Date reg_date;
 	private Date update_date;
 	
-	//책에서는 롬복loombok.jar 을 사용해서 아래 내용을 생략한다.(메이븐에 추가해서 사용함)
+	//책에서는 롬복lombok.jar 을 사용해서 아래 내용을 생략한다.(메이븐에 추가해서 사용함)
 	//우리는 그냥 get/set을 만들었음.
 	public String getUser_id() {
 		return user_id;

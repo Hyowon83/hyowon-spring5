@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -16,6 +17,9 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import com.edu.service.IF_MemberService;
+import com.edu.vo.MemberVO;
 
 /**
  * 이 클래스는 오라클과 연동해서 CRUD를 테스트해보는 클래스입니다.
@@ -33,19 +37,22 @@ public class DataSourceTest {
 	private Logger logger = Logger.getLogger(DataSourceTest.class);
 	//dataSource객체는 데이터베이스 객체를 pool로 저장해서 사용할때 DataSource클래스를 사용(아래)
 	@Inject //인젝트는 스프링에서 객체를 만드는 방법, 이전 자바에서는 new 키워드로 객체를 만들었음.
-	DataSource dataSource; //Inject로 객체를 만들면 메모리 관리를 스프링이 대신해줌.
+	private DataSource dataSource; //Inject로 객체를 만들면 메모리 관리를 스프링이 대신해줌.
 	//Inject는 자바8부터 지원. 이전 자바7에서는 @Autowired로 객체를 만들었음.
+	@Inject //MemberService서비스를 주입받아서 객체를 사용합니다.(아래)
+	private IF_MemberService memberService;
 	
-	
-	//스프링 코딩 시작 순서
-	//M - V - C 사이에 데이터를 입출력하는 임시저장공간(VO클래스-멤버변수+Get/Set메소드)생성.
-	//보통 ValueObject클래스는 DB테이블과 1:1로 매칭 됨.
-	//그래서 1. MemberVO.java라는 VO클래스를 생성한다.(필수)
-	//2. VO클래스를 사용해서 DB(마이바티스)쿼리를 만든다.
+	//스프링 코딩 시작 순서(리드미로 옮겨놓음)
 	@Test
 	public void selectMember() throws Exception {
 		//이 메소드가 회원 관리 테이블에서 더미로 입력한 100개의 레코드를 출력하는 메소드를 테스트하면 -> 회원관리 목록이 출력됨.
-		
+		//현재 100명 검색기능, 페이징기능 여기서 구현, 1페이지에 10명씩.
+		//현재 몇페이지, 검색어 임시저장 공간 -> DB에 페이징 조건문, 검색조건문
+		//변수를 2-3이상은 바로 String 변수로 처리하지 않고, VO만들어서 사용.
+		//PageVO.java 클래스를 만들어서 페이징처리변수와 검색어변수 선언, get/set 생성
+		//PageVO 만들기 전에 SQL쿼리로 가상페이지를 구현해보면서 필요한 변수를 만들어야합니다.
+		List<MemberVO> listMember = memberService.selectMember();
+		listMember.toString();
 	}
 	
 	@Test
