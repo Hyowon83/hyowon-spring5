@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.edu.dao.IF_MemberDAO;
 import com.edu.vo.MemberVO;
+import com.edu.vo.PageVO;
 
 /**
  * 이 클래스는 회원관리서비스 인터페이스의 구현내용을 포함한 파일입니다.
@@ -22,9 +23,28 @@ public class MemberServiceImpl implements IF_MemberService {
 	private IF_MemberDAO memberDAO;
 
 	@Override
-	public List<MemberVO> selectMember() throws Exception {
+	public List<MemberVO> selectMember(PageVO pageVO) throws Exception {
 		// 인테페이스에서 상속받은 메소드를 구현(아래)
-		return memberDAO.selectMember();
+		return memberDAO.selectMember(pageVO);
+	}
+
+	@Override
+	public int countMember() throws Exception {
+		// 인젝션으로 주입받은 DAO 객체를 사용(아래)
+		return memberDAO.countMember();
+	}
+
+	@Override
+	public void insertMember(MemberVO memberVO) throws Exception {
+		// 클래스 상단에서 인젝션으로 주입받은 DAO객체를 사용(아래)
+		memberDAO.insertMember(memberVO);
+		
+	}
+
+	@Override
+	public void deleteMember(String user_id) throws Exception {
+		// 클래스 상단에서 인젝션으로 주입받은 DAO객체를 사용(아래)
+		memberDAO.deleteMember(user_id);
 	}
 
 }

@@ -5,8 +5,70 @@
 <!-- 이 매퍼는 회원관리 CRUD(입력, 조회, 수정, 삭제)를 처리하는 쿼리를 모아놓은 파일입니다. -->
 <!-- 이번주는 조회기능 중 검색, 페이징처리 기능을 실습하는것이 핵심 -->
 <mapper namespace="memberMapper">
-<!-- 무조건 조회처리 -->
+<!-- 공통쿼리 마이바티스 include문 사용(아래) -->
+<!-- if 조건문에서 test조건부분에 문자열 비교시 '문자열'.toString()형 변환함수는 필수입니다.(없으면 비교 불가) -->
+<!-- test="'all'.equals(search_type)"으로도 쓸 수 있는데 equals메소드를 사용하면 null비교도 포함됩니다. -->
+<sql id="sqlWhere">
+	<if test ="search_type != '' and search_type != null">
+      WHERE
+       	<if test="search_type == 'all'.toString()">
+	        user_id LIKE '%'||#{search_keyword}||'%'
+	        OR user_name LIKE '%'||#{search_keyword}||'%'
+        </if>
+        <if test="search_type == 'user_id'.toString()">
+        	user_id LIKE '%'||#{search_keyword}||'%'
+        </if>
+        <if test="search_type == 'user_name'.toString()">
+        	user_name LIKE '%'||#{search_keyword}||'%'
+        </if>
+	</if>
+</sql>
+<!-- jsp폼에서 전송받은 user_id값의 데이터를 이용해서 DB에 해당 레코드를 삭제(아래) -->
+<delete id="deleteMember">
+delete from tbl_member where user_id = #{user_id}
+</delete>
+<!-- jsp폼에서 전송받은 memberVO객체의 데이터를 DB에 insert합니다(아래) -->
+<insert id="insertMember">
+insert into tbl_member
+(
+user_id,
+user_pw,
+user_name,
+email,
+point,
+enabled,
+levels,
+reg_date
+)
+values
+(
+#{user_id},
+#{user_pw},
+#{user_name},
+#{email},
+#{point},
+#{enabled},
+#{levels},
+systimestamp
+)
+</insert>
+<!-- 카운트 쿼리(아래) -->
+<select id="countMember" resultType="int">
+select count(*) from tbl_member
+</select>
+<!-- pageVO를 받아서 처리하는 조회 쿼리 -->
 <select id="selectMember" resultType="com.edu.vo.MemberVO">
-select * from tbl_member
+SELECT TB.* FROM
+    (
+    SELECT ROWNUM AS RNUM, TA.* FROM
+    (
+        SELECT * FROM tbl_member
+        <include refid="sqlWhere" />
+        ORDER BY reg_date DESC
+    ) TA 
+<![CDATA[
+    WHERE ROWNUM <= (#{queryStartNo}*#{queryPerPageNum})+#{queryPerPageNum}
+) TB WHERE TB.RNUM > #{queryStartNo}*#{queryPerPageNum}
+]]>
 </select>
 </mapper>

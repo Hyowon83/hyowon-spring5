@@ -20,6 +20,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.edu.service.IF_MemberService;
 import com.edu.vo.MemberVO;
+import com.edu.vo.PageVO;
 
 /**
  * 이 클래스는 오라클과 연동해서 CRUD를 테스트해보는 클래스입니다.
@@ -42,6 +43,25 @@ public class DataSourceTest {
 	@Inject //MemberService서비스를 주입받아서 객체를 사용합니다.(아래)
 	private IF_MemberService memberService;
 	
+	@Test
+	public void deleteMember() throws Exception {
+		memberService.deleteMember("user_del");
+	}
+	@Test
+	public void insertMember() throws Exception {
+		MemberVO memberVO = new MemberVO();
+		//insert쿼리에 저장할 객체를 만듭니다.
+		memberVO.setUser_id("user_del");
+		memberVO.setUser_pw("1234"); //스프링 시큐리티 중 암호화로 처리예정
+		memberVO.setEmail("user@test.com");
+		memberVO.setPoint(10);
+		memberVO.setEnabled(true);
+		memberVO.setLevels("ROLE_USER");
+		memberVO.setUser_name("삭제할 사용자");
+		memberService.insertMember(memberVO);
+		selectMember();
+	}
+	
 	//스프링 코딩 시작 순서(리드미로 옮겨놓음)
 	@Test
 	public void selectMember() throws Exception {
@@ -51,7 +71,19 @@ public class DataSourceTest {
 		//변수를 2-3이상은 바로 String 변수로 처리하지 않고, VO만들어서 사용.
 		//PageVO.java 클래스를 만들어서 페이징처리변수와 검색어변수 선언, get/set 생성
 		//PageVO 만들기 전에 SQL쿼리로 가상페이지를 구현해보면서 필요한 변수를 만들어야합니다.
-		List<MemberVO> listMember = memberService.selectMember();
+		//PageVO 객체를 만들어서 가상으로 초기값을 입력합니다.
+		PageVO pageVO = new PageVO();
+		pageVO.setPage(1); //기본값으로 1페이지를 줍니다.
+		pageVO.setPerPageNum(10); //UI하단에서 사용되는 페이지 개수
+		pageVO.setQueryPerPageNum(10); //쿼리에서 사용되는 페이지당 개수
+		pageVO.setTotalCount(memberService.countMember()); //테스트를 위해 카운트를 입력해줌. 하드코딩. 다른 설정보다 상단에 위치할때 에러남.
+		//startPage와 endPage의 계산에 위의 토탈카운트 변수값이 필수입니다.
+		pageVO.setSearch_type("user_id"); //검색타입: all, user_id, user_name
+		pageVO.setSearch_keyword("user_del");
+		//매퍼쿼리_DAO클래스_Service클래스_JUnit(나중엔컨트롤러에서 작업)했는데 이제는 역순으로 작업 할 예정
+		//더 진행하기 전에 현재 pageVO객체에는 어떤값이 들어있는지 확인하고 사용.(아래)
+		logger.info("pageVO저장된 값 확인: "+pageVO.toString());
+		List<MemberVO> listMember = memberService.selectMember(pageVO);
 		listMember.toString();
 	}
 	
@@ -59,7 +91,7 @@ public class DataSourceTest {
 	public void oldQueryTest() throws Exception {
 		//스프링빈을 사용하지 않을 때 예전 방식: 코딩테스트에서는 스프링 설정을 안쓰고, 직접 DB아이디/암호 입력		
 		Connection connection = null;
-		connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/XE","XE2","apmsetup");
+		connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/XE","XE","apmsetup");
 		logger.debug("데이터베이스 직접 접속이 성공 하였습니다.DB종류는 : " + connection.getMetaData().getDatabaseProductName());
 		//직접 쿼리를 날립니다. 날리기전 쿼리문장 객체생성 statment
 		Statement stmt = connection.createStatement();
