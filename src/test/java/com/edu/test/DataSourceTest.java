@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -42,6 +43,57 @@ public class DataSourceTest {
 	//Inject는 자바8부터 지원. 이전 자바7에서는 @Autowired로 객체를 만들었음.
 	@Inject //MemberService서비스를 주입받아서 객체를 사용합니다.(아래)
 	private IF_MemberService memberService;
+	
+	@Test
+	public void updateMember() throws Exception {
+		//이 메소드는 회원정보를 수정하는 기능.jsp에서 사용예정
+		MemberVO memberVO = new MemberVO();
+		memberVO.setEmail("admin@test.com");
+		memberVO.setEnabled(true);
+		memberVO.setLevels("ROLE_ADMIN");
+		memberVO.setPoint(100);
+		memberVO.setUser_name("최고관리자");
+		memberVO.setUser_pw(""); //입력하지 않으면 업데이트에서 제외됩니다.
+		//메소드 내에서 적용된 객체변수 생성(아래)
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		//스프링5 시큐리티 암호화를 적용하는 로직(아래)
+		if((memberVO.getUser_pw()).length() > 0) {
+			String userPwEncoder = passwordEncoder.encode(memberVO.getUser_pw());
+			memberVO.setUser_pw(userPwEncoder); //암호화된 해시데이터가 memberVO 객체에 임시저장됨.
+		}
+		memberVO.setUser_id("admin"); //수정 조회조건에 사용.
+		memberService.updateMember(memberVO);
+		// =========== 여기까는 jsp에서 1명의 회원만 업데이트(수정)할때 사용하는 로직
+		// =========== 이후 부터는 모든회원중의 시큐리티암호화가 되지않는 사용자만 암호만 업데이트하는 로직
+		//아래수정 call호출을 회원수만큼 반복을 해야합니다.(아래)
+		PageVO pageVO = new PageVO();
+		pageVO.setPage(1); //기본값으로 1페이지를 줍니다.
+		pageVO.setPerPageNum(10); //UI하단에서 사용되는 페이지 개수
+		pageVO.setQueryPerPageNum(1000); //쿼리에서 사용되는 페이지당 개수
+		//MemberVO타입을 가진 리스트형 객체 List<MemberVO>
+		List<MemberVO> listMember = memberService.selectMember(pageVO);
+		//향상된 for반복문 (memberOne:listMember) {구현내용}
+		for(MemberVO memberOne:listMember) { //listMember객체가 비워질때까지 반복
+			//혹시 실수로 여러번 실행시켜서 이중암호화를 시킬수있으므로 데이터 크기가 일정이상이 넘어가면 실행되지 않게 제외조건을 추가 한다.(아래)
+			String rawPassword = memberOne.getUser_pw();
+			if(rawPassword.length() < 10) { //원시암호데이터 길이가 10보다 작을때만 암호화로직 진입
+				//memberOne이라는 객체(1개 레코드)의 암호를 뽑아서 시큐리티로 암호화 시킨 후 onePwEncoder라는 변수를 입력.
+				String onePwEncoder = passwordEncoder.encode(rawPassword);
+				memberOne.setUser_pw(onePwEncoder);
+				memberService.updateMember(memberOne); //1명(admin만) 수정해도 모든 회원 업데이트
+			}
+		}
+		selectMember();
+	}
+	
+	@Test
+	public void readMember() throws Exception {
+		//이 메소드는 회원 상세보기(1개의 레코드) jsp에 사용할 예정
+		MemberVO memberVO = new MemberVO();
+		//100명 중 1명을 보려면 고유키(기본키,주키,PK)가 필요. user_id
+		memberVO.setUser_id("admin");
+		memberVO = memberService.readMember(memberVO.getUser_id());
+	}
 	
 	@Test
 	public void deleteMember() throws Exception {
@@ -75,11 +127,13 @@ public class DataSourceTest {
 		PageVO pageVO = new PageVO();
 		pageVO.setPage(1); //기본값으로 1페이지를 줍니다.
 		pageVO.setPerPageNum(10); //UI하단에서 사용되는 페이지 개수
-		pageVO.setQueryPerPageNum(10); //쿼리에서 사용되는 페이지당 개수
-		pageVO.setTotalCount(memberService.countMember()); //테스트를 위해 카운트를 입력해줌. 하드코딩. 다른 설정보다 상단에 위치할때 에러남.
+		pageVO.setQueryPerPageNum(1000); //쿼리에서 사용되는 페이지당 개수
+		//pageVO.setTotalCount(memberService.countMember(pageVO)); //테스트를 위해 카운트를 입력해줌. 하드코딩. 다른 설정보다 상단에 위치할때 에러남.
 		//startPage와 endPage의 계산에 위의 토탈카운트 변수값이 필수입니다.
+		/*
 		pageVO.setSearch_type("user_id"); //검색타입: all, user_id, user_name
 		pageVO.setSearch_keyword("user_del");
+		*/
 		//매퍼쿼리_DAO클래스_Service클래스_JUnit(나중엔컨트롤러에서 작업)했는데 이제는 역순으로 작업 할 예정
 		//더 진행하기 전에 현재 pageVO객체에는 어떤값이 들어있는지 확인하고 사용.(아래)
 		logger.info("pageVO저장된 값 확인: "+pageVO.toString());
