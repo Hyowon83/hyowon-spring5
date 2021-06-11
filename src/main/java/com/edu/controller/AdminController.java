@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.edu.service.IF_MemberService;
 import com.edu.vo.MemberVO;
@@ -30,23 +32,43 @@ public class AdminController {
 	@Inject
 	private IF_MemberService memberService;
 	
-	@RequestMapping(value="/admin/member/member_list", method=RequestMethod.GET)
-	public String selectMember(PageVO pageVO) throws Exception {
-		//jsp 검색시 search_type,search_keyword로 내용이 PageVO클래스에 Set 됩니다.
+	@RequestMapping(value="/admin/member/member_view", method=RequestMethod.GET)
+	public String viewMemberForm(Model model, @RequestParam("user_id")String user_id, @ModelAttribute("pageVO")PageVO pageVO) throws Exception {
+		/*
+		 * 이 메소드는 리스트페이지에서 상세보기로 이동할때 보여주는  1개 레코드값을 보여주는것을 구현.
+		 * JUnit에서 테스트했던 readMember 방식을 이용.
+		 * 다른점은 JUnit에서는 식별자 ID를 상제로 지정했지만 이 메서드에서는 @RequestParam인터페이스를 이용해서 식별자 값을 받음
+		 */
 		
-		//역방향: 검색한 결과를 jsp로 보내줍니다.
+		//위 출력값 memberVO 의 1개의 레코드를 model을 이용해서 member_view.jsp로 보냅니다.(아래)
+		model.addAttribute("memberVO",memberService.readMember(user_id));
+		return "admin/member/member_view"; //상대경로 폴더 파일 위치
+	}
+	
+	@RequestMapping(value="/admin/member/member_list", method=RequestMethod.GET)
+	public String selectMember(@ModelAttribute("pageVO")PageVO pageVO, Model model) throws Exception {
+		/*
+		  이 메소드는 2개의 객체를 생성해서 jsp로 보내줘야합니다.
+		 1객체: memberList를 생성, model 통해서 jsp로 전송
+		 2객체: pageVO객체(prev,next,startPage,endPage)를 생성, model 통해서 jsp로 전송
+		 2번객체부터 로직이 필요: 2번객체에서 memberList를 구하는 쿼리변수가 만들어지기 때문에.
+		 */
 		if(pageVO.getPage() == null) { //jsp에서 전송값이 없을때만 초기값 강제로 입력.
 			pageVO.setPage(1);
 		}
-		//pageVO의 clacPage메소드를 실행하려면 필수 변수값을 입력해야함(아래)
-		
-		
-		pageVO.setQueryPerPageNum(10);
-		pageVO.setPerPageNum(10);
+		//pageVO의 clacPage()로직 < 변수(객체)값의 이동 확인
+		pageVO.setQueryPerPageNum(5); //memberList쿼리에 필요.
+		pageVO.setPerPageNum(5); //startPage구할때
+		//위 두 변수가 있어야 totalCount를 구할 수 있음.
+		//위 두 변수값을 이용해서 아래 setTotalCount메소드에서 calsPage() 호출.
 		pageVO.setTotalCount(memberService.countMember(pageVO)); //검색되든 안되든 결과의 전체카운트값.
+		//calcPage() 실행되면 prev,next 변수값이 입력됩니다.
 		List<MemberVO> listMember = memberService.selectMember(pageVO);
-		
+		//위 setPerPageNum이 20이면 next가 false, 5면 true.
+		//100명의 회원에서는 하단 페이지번호가 10까지 일 때 nest가 false인게 정상.
 		logger.info("디버그"+pageVO.toString()); //지금까지 jsp -> 컨트롤러 일방향 자료이동.
+		model.addAttribute("listMember",listMember);
+		//model.addAttribute("pageVO", pageVO);
 		return "admin/member/member_list"; //jsp파일 상대경로
 	}
 	//URL요청 경로=리퀘스트맵핑 는 반드시 *절대경로*로 표시.

@@ -32,7 +32,7 @@ public class PageVO {
 	}
 	public int getQueryStartNo() {
 		//this.page-1의 이유: jsp에서 받아올때는 1,2,3,....으로 받지만 쿼리에서는 0,1,2,...로 받기 때문에 0으로 맞춰줌.
-		queryStartNo = (this.page-1)*queryPerPageNum;
+		queryStartNo = this.page-1; //오라클은 가능하지만 mysql에서는 쿼리를 수정해야한다.
 		return queryStartNo;
 	}
 	public void setQueryStartNo(int queryStartNo) {
