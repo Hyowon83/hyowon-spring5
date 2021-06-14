@@ -35,7 +35,7 @@
           </div>
           <!-- /.card-header -->
           <!-- form start -->
-          <form id="form_view" name="form_view" action="/admin/member/member_update" method="post" enctype="multipart/form-data">
+          <form id="form_view" name="form_view" action="/admin/member/member_update_form" method="get" enctype="multipart/form-data">
             <!-- get방식은 검색, post방식은 글쓰기 로그인 등.(get방식하면 입력한 비밀번호가 주소에 뜸) -->
             <!-- enctype="multipart/form-data": 첨부파일을 전송할 때 필수로 들어가야 함. -->
             <div class="card-body">
@@ -102,10 +102,18 @@
 <!-- 관리자단은 jQuery코어가 하단 footer에 있기 때문에 푸터 아래에 위치한다. -->
 <script>
 $(document).ready(function() {
+	$("#btn_delete").click(function() {
+		if(confirm("정말로 삭제하시겠습니까?")) {
+			//위 컨펌 대화상자에서 예.를 누르면 아래부분이 실행됨.(아니오.건너뜀)
+			$("#form_view").attr("action","/admin/member/member_delete");
+			$("#form_view").attr("method","post");
+			$("#form_view").submit();
+		}
+	});
 	$("#btn_list").click(function() {
-		alert('준비중입니다.');
-		//var queryString = 'page=${pageVO.page}&search_type=${pageVO.search_type}&search_keyword=${pageVO.search_keyword}';
-		//location.replace('/admin/member/member_list?'+queryString);
+		//alert('준비중입니다.');
+		var queryString = 'page=${pageVO.page}&search_type=${pageVO.search_type}&search_keyword=${pageVO.search_keyword}';
+		location.replace('/admin/member/member_list?'+queryString);
 	});
 });
 </script>

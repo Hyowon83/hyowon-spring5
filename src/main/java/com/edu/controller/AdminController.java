@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,8 +33,50 @@ public class AdminController {
 	@Inject
 	private IF_MemberService memberService;
 	
+	//아래 경로는 수정처리를 호출=DB를 변경처리
+	@RequestMapping(value="/admin/member/member_update",method=RequestMethod.POST)
+	public String updateMember(MemberVO memberVO,PageVO pageVO) throws Exception {
+		//update 서비스만 처리하면 됨.
+		//update쿼리 서비스 호출 전에 스프링시큐리티로 사용자암호에 암호화 적용.(아래)
+		String rawPassword = memberVO.getUser_pw();
+		if(!rawPassword.isEmpty()) { //수정폼에서 암호입력값이 비어있지 않을때만 아래 로직 실행.
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			String encPassword = passwordEncoder.encode(rawPassword);
+			memberVO.setUser_pw(encPassword);
+		}
+		memberService.updateMember(memberVO); //void라 반환값이 없습니다.
+		//redirect로 페이지를 이동하면 model에 담아서 보낼 수 없습니다. 쿼리스트링(URL?)로 보내야합니다.
+		String queryString = "user_id="+memberVO.getUser_id()+"&page="+pageVO.getPage()+"&search_type="+pageVO.getSearch_type()+"&search_keyword="+pageVO.getSearch_keyword();
+		return "redirect:/admin/member/member_update_form?"+queryString; //.jsp
+	}
+	
+	//아래 경로는 수정폼을 호출=화면에 출력만(렌더링만)
+	@RequestMapping(value="/admin/member/member_update_form",method=RequestMethod.GET)
+	public String updateMemberForm(MemberVO memberVO, Model model, @ModelAttribute("pageVO")PageVO pageVO) throws Exception {
+		//이 메소드는 수정폼에 pageVO, memberVO 2개의 데이터 객체를 jsp로 보냅니다.
+		//사용자 한명의 레코드를 가져오는 멤버서비스(쿼리)를 실행합니다(아래)
+		MemberVO memberView = memberService.readMember(memberVO.getUser_id());
+		//사용자 한명의 레코드를 model과 @ModelAttribute("pageVO")에 담아서 jsp로 보냅니다.
+		model.addAttribute("memberVO", memberView);
+		return "admin/member/member_update"; //상대경로
+	}
+	
+	@RequestMapping(value="/admin/member/member_delete",method=RequestMethod.POST)
+	public String deleteMember(MemberVO memberVO) throws Exception {
+		logger.info("디버그: "+memberVO.toString());
+		//MemberVO memberVO는 클래스형 변수: String user_id 스트링형 변수 같은 방식.
+		String user_id = memberVO.getUser_id();
+		//이 메소드는 회원상세보기페이지에서 삭제버튼 클릭시 전송받은 memberVO값을 이용해서 삭제를 구현(아래)
+		memberService.deleteMember(user_id); //삭제 쿼리가 실행
+		//return "admin/member/member_list"; //삭제 후 이동할 jsp경로 지정.
+		//이 방식대로 하면 잘 실행되지만 새로고침 하면 게시판 테러(/admin/member/member_delete 계속 실행)가 발생 할 수 있음. -사용자단에서 실습 예정
+		//이를 방지하기 위해 쿼리를 작업 후 이동할때는 redirect(재접속)라는 명령을 사용합니다.
+		return "redirect:/admin/member/member_list"; //redirect는 절대경로 사용
+	}
+	
 	@RequestMapping(value="/admin/member/member_view", method=RequestMethod.GET)
 	public String viewMemberForm(Model model, @RequestParam("user_id")String user_id, @ModelAttribute("pageVO")PageVO pageVO) throws Exception {
+	//페이지 진입 시 받은 클래스 변수 값 PageVO pageVO
 		/*
 		 * 이 메소드는 리스트페이지에서 상세보기로 이동할때 보여주는  1개 레코드값을 보여주는것을 구현.
 		 * JUnit에서 테스트했던 readMember 방식을 이용.
@@ -42,6 +85,7 @@ public class AdminController {
 		
 		//위 출력값 memberVO 의 1개의 레코드를 model을 이용해서 member_view.jsp로 보냅니다.(아래)
 		model.addAttribute("memberVO",memberService.readMember(user_id));
+	//아래 페이지 반환시(렌더링) @ModelAttribute("pageVO")에 의해서 pageVO(소문자)로 jps에 보냄.
 		return "admin/member/member_view"; //상대경로 폴더 파일 위치
 	}
 	
