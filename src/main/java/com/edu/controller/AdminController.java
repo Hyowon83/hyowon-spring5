@@ -33,6 +33,23 @@ public class AdminController {
 	@Inject
 	private IF_MemberService memberService;
 	
+	//아래 경로는 회원 신규등록 폼을 화면에 출력하는 URL 쿼리스트링으로 보낸 데이터를 받을땐 GET방식으로 받습니다.
+	@RequestMapping(value="/admin/member/member_insert_form",method=RequestMethod.GET)
+	public String insertMemberForm(@ModelAttribute("pageVO")PageVO pageVO) throws Exception {
+		
+		return "admin/member/member_insert";
+	}
+	//아래 경로는 회원 신규등록을 처리하는 URL
+	@RequestMapping(value="/admin/member/member_insert",method=RequestMethod.POST)
+	public String insertMember(PageVO pageVO, MemberVO memberVO) throws Exception {
+		String rawPassword = memberVO.getUser_pw();
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String encPassword = passwordEncoder.encode(rawPassword);
+		memberVO.setUser_pw(encPassword);
+		memberService.insertMember(memberVO);
+		return "redirect:/admin/member/member_list";
+	}
+
 	//아래 경로는 수정처리를 호출=DB를 변경처리
 	@RequestMapping(value="/admin/member/member_update",method=RequestMethod.POST)
 	public String updateMember(MemberVO memberVO,PageVO pageVO) throws Exception {
