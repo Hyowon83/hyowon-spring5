@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.edu.service.IF_BoardTypeService;
 import com.edu.service.IF_MemberService;
+import com.edu.vo.BoardTypeVO;
 import com.edu.vo.MemberVO;
 import com.edu.vo.PageVO;
 
 /**
- * 이클래스는 admin관리자단을 접근하는 클래스입니다.
+ * 이클래스는 admin관리자단을 접근하는 클래스입니다. <- 디스패처 서블렛(게이트웨이) 기능을 합니다.
+ * 디스패쳐 서블렛이 실행될때, 컨트롤러의 Request매핑경로를 다 등록합니다.
  * 변수 Object를 만들어서 jsp로 전송 + jsp에서 폼값을 받아서 Object로 처리
  * @author 장효원
  *
@@ -32,9 +35,48 @@ public class AdminController {
 	//이 메소드는 회원목록을 출력하는 jsp와 매핑이 됩니다.
 	@Inject
 	private IF_MemberService memberService;
+	@Inject
+	private IF_BoardTypeService boardTypeService;
+	
+	//jsp에서 게시판 생성관리에 Get/Post 접근할때 URL을 bbs_type으로 지정합니다.
+	//왜 board_type으로 하지 않을까? 왼쪽 메뉴를 고정시키는 로직에서 경로가 board로 시작하는 파일과 겹치지 않기 위해.
+	@RequestMapping(value="/admin/bbs_type/bbs_type_list", method = RequestMethod.GET)
+	public String selectBoardTypeList(Model model) throws Exception { //목록폼
+		model.addAttribute("listBoardTypeVO", boardTypeService.selectBoardType());
+		return "admin/bbs_type/bbs_type_list"; //상대경로일때는 views가 루트.
+	}
+	////bbs_type_list.jsp 게시판 생성을 클릭했을때 이동하는 폼 경로.(아래)
+	@RequestMapping(value="/admin/bbs_type/bbs_type_insert", method = RequestMethod.GET)
+	public String insertBoardTypeForm() throws Exception { //입력폼
+		
+		return "admin/bbs_type/bbs_type_insert";
+	}
+	//bbs_type_list.jsp의 입력폼에서 전송된 값을 boardTypeVO에 담아서 구현(아래) 자동으로 값이 바인딩되려면 폼name과 VO멤버변수명이 동일해야함.
+	@RequestMapping(value="/admin/bbs_type/bbs_type_insert", method = RequestMethod.POST)
+	public String insertBoardType(BoardTypeVO boardTypeVO) throws Exception { //입력처리
+		boardTypeService.insertBoardType(boardTypeVO);
+		return "redirect:/admin/bbs_type/bbs_type_list"; //리다이렉트는 뒤로가기 불가
+	}
+	//게시판 생성관리는 사용자단에서 UI를 사용할일이 없기 때문에 Read,Update를 하나로 사용한다.
+	@RequestMapping(value="/admin/bbs_type/bbs_type_update", method = RequestMethod.GET)
+	public String updateBoardTypeForm(@RequestParam("board_type")String board_type, Model model) throws Exception { //수정폼
+		model.addAttribute("boardTypeVO", boardTypeService.readBoardType(board_type));
+		//서식model.addAllAttributes("jsp변수로 담아서 view화면으로 보냄", "서비스에서 쿼리 실행한 데이터객체");
+		return "admin/bbs_type/bbs_type_update";
+	}
+	@RequestMapping(value="/admin/bbs_type/bbs_type_update", method = RequestMethod.POST)
+	public String updateBoardType(BoardTypeVO boardTypeVO) throws Exception { //수정처리
+		boardTypeService.updateBoardType(boardTypeVO);
+		return "redirect:/admin/bbs_type/bbs_type_update?board_type="+boardTypeVO.getBoard_type(); //수정한 이후 수정폼을 GET방식으로 이동
+	}
+	@RequestMapping(value="/admin/bbs_type/bbs_type_delete", method = RequestMethod.POST)
+	public String deleteBoardType(@RequestParam("board_type")String board_type) throws Exception { //삭제처리
+		boardTypeService.deleteBoardType(board_type); //삭제서비스 호출 끝
+		return "redirect:/admin/bbs_type/bbs_type_list";
+	}
 	
 	//아래 경로는 회원 신규등록 폼을 화면에 출력하는 URL 쿼리스트링으로 보낸 데이터를 받을땐 GET방식으로 받습니다.
-	@RequestMapping(value="/admin/member/member_insert_form",method=RequestMethod.GET)
+	@RequestMapping(value="/admin/member/member_insert_form", method = RequestMethod.GET)
 	public String insertMemberForm(@ModelAttribute("pageVO")PageVO pageVO) throws Exception {
 		
 		return "admin/member/member_insert";
