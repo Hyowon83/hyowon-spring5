@@ -45,7 +45,7 @@
                 <label for="user_id">사용자ID
                 <button id="btn_id_check" type="button" class="btn btn-sm btn-secondary">중복체크</button>
                 </label>
-                <input value="" name="user_id" type="text" class="form-control" id="user_id" placeholder="회원ID를 입력해주세요." required>
+                <input value="" name="user_id" type="text" style="ime-mode:disabled" class="form-control" id="user_id" placeholder="회원ID를 입력해주세요." required>
               </div>
               <div class="form-group">
                 <label for="user_pw">사용자암호</label>

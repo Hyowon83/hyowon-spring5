@@ -55,7 +55,7 @@
             
             <div class="card-footer text-right">
               <button type="submit" class="btn btn-primary">수정</button>
-              <button type="button" class="btn btn-warning" id="btn_delete">삭제</button>
+              <button type="button" class="btn btn-danger" id="btn_delete">삭제</button>
               <a href="/admin/bbs_type/bbs_type_list" class="btn btn-default">목록</a>
             </div>
           </form>
@@ -71,12 +71,11 @@
 <%@ include file="../include/footer.jsp" %>
 <script>
 $(document).ready(function(){
-	   $("#btn_delete").click(function(){
-		   if(confirm("정말로 삭제하시겠습니까?")) {
-		      	var form_write = $("form[name='form_write']");
-		      	form_write.attr("action","/admin/bbs_type/bbs_type_delete");
-		      	form_write.submin();
-		   };
-	   });
-	});
+      $("#btn_delete").click(function(){
+        if(confirm("정말로 삭제하시겠습니까?"))
+         var form_write = $("form[name='form_write']");
+         form_write.attr("action","/admin/bbs_type/bbs_type_delete");
+         form_write.submit();
+      })
+   });
 </script>
