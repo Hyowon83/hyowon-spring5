@@ -42,7 +42,7 @@ public class AdminController {
 	//왜 board_type으로 하지 않을까? 왼쪽 메뉴를 고정시키는 로직에서 경로가 board로 시작하는 파일과 겹치지 않기 위해.
 	@RequestMapping(value="/admin/bbs_type/bbs_type_list", method = RequestMethod.GET)
 	public String selectBoardTypeList(Model model) throws Exception { //목록폼
-		//아래 모델은 AOP기능 중 ControllerAdvice에서 
+		//아래 모델은 AOP기능 중 ControllerAdvice인터페이스로 구현했기 때문에 실행안함.
 		//model.addAttribute("listBoardTypeVO", boardTypeService.selectBoardType());
 		return "admin/bbs_type/bbs_type_list"; //상대경로일때는 views가 루트.
 	}

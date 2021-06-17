@@ -22,6 +22,8 @@ public class AspectAdvice {
 	@Inject
 	private IF_BoardTypeService boardTypeService;
 	
+	//나중에 게시물 관리 기능 만들 때 @Aspect로 AOP기능을 추가할 예정
+	
 	//위 @ControllerAdvice를 이용해서 컨트롤러의 모든 메소드가 실행되기 전에 호출만 되면 아래 메소드가 자동실행(콜백)됨. (콜백함수)
 	//아래 메소드는 컨트롤러의 메소드가 실행되기 전에 값을 생성해서 model객체에 담아서 jsp로 데이터를 보냄.
 	@ModelAttribute("listBoardTypeVO")
