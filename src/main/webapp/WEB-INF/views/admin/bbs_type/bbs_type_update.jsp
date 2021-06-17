@@ -34,7 +34,7 @@
           </div>
           <!-- /.card-header -->
           <!-- form start -->
-          <form name="form_write" action="board_write.html" enctype="multipart/form-data">
+          <form name="form_write" method="post" action="/admin/bbs_type/bbs_type_update" enctype="multipart/form-data">
             <!-- get방식은 검색, post방식은 글쓰기 로그인 등.(get방식하면 입력한 비밀번호가 주소에 뜸) -->
             <!-- enctype="multipart/form-data": 첨부파일을 전송할 때 필수로 들어가야 함. -->
             <div class="card-body">
@@ -54,8 +54,8 @@
             <!-- /.card-body -->
             
             <div class="card-footer text-right">
-              <button type="submit" class="btn btn-primary">등록</button>
-              <a href="board_list.html" class="btn btn-default">목록</a>
+              <button type="submit" class="btn btn-primary">수정</button>
+              <a href="/admin/bbs_type/bbs_type_list" class="btn btn-default">목록</a>
             </div>
           </form>
         </div>
