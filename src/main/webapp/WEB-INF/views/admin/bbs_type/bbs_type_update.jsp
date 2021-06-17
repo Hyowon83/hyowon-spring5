@@ -30,7 +30,7 @@
         <!-- 컨텐츠 내용 -->
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">등록/수정</h3>
+            <h3 class="card-title">뷰/수정</h3>
           </div>
           <!-- /.card-header -->
           <!-- form start -->
@@ -40,7 +40,7 @@
             <div class="card-body">
               <div class="form-group">
                 <label for="board_type">게시판타입</label>
-                <input value="${boardTypeVO.board_type}" name="board_type" type="text" class="form-control" id="board_type" placeholder="게시판 타입을 입력해주세요." required>
+                <input readonly value="${boardTypeVO.board_type}" name="board_type" type="text" class="form-control" id="board_type" placeholder="게시판 타입을 입력해주세요." required>
               </div>
               <div class="form-group">
                 <label for="board_name">게시판이름</label>
