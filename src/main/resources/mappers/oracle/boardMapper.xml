@@ -26,10 +26,12 @@ insert into tbl_attach
 values
 (
 	#{save_file_name},#{real_file_name},sysdate,#{bno}
+	
 )
 </insert>
-<!-- bno변수값으로 받는 로직을 추가했기 때문에 아래를 주석처리
-		select bno from (
+<!-- 
+bno 변수값으로 받는 로직을 추가했기때문에 아래 주석
+select bno from (
 		select bno from tbl_board order by bno desc
 	) where rownum = 1
  -->

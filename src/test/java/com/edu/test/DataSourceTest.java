@@ -54,6 +54,7 @@ public class DataSourceTest {
 		boardVO.setTitle("인서트 후 반환값테스트");
 		boardVO.setContent("JUnit 입력 테스트");
 		boardVO.setWriter("admin");
+		boardVO.setBoard_type("gallery");
 		boardService.insertBoard(boardVO);
 	}
 	
