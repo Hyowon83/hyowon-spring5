@@ -19,7 +19,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.edu.service.IF_BoardService;
 import com.edu.service.IF_MemberService;
+import com.edu.vo.BoardVO;
 import com.edu.vo.MemberVO;
 import com.edu.vo.PageVO;
 
@@ -43,6 +45,17 @@ public class DataSourceTest {
 	//Inject는 자바8부터 지원. 이전 자바7에서는 @Autowired로 객체를 만들었음.
 	@Inject //MemberService서비스를 주입받아서 객체를 사용합니다.(아래)
 	private IF_MemberService memberService;
+	@Inject
+	private IF_BoardService boardService;
+	
+	@Test
+	public void insertBoard() throws Exception {
+		BoardVO boardVO = new BoardVO();
+		boardVO.setTitle("인서트 후 반환값테스트");
+		boardVO.setContent("JUnit 입력 테스트");
+		boardVO.setWriter("admin");
+		boardService.insertBoard(boardVO);
+	}
 	
 	@Test
 	public void updateMember() throws Exception {

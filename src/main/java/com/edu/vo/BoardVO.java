@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class BoardVO {
 	//멤버변수 설정
-	private Integer bno;
+	private Integer bno; //PK
 	private String title;
 	private String content;
 	private String writer;
@@ -19,6 +19,24 @@ public class BoardVO {
 	private Date reg_date;
 	private Date update_date;
 	private String board_type; //FK
+	//private String save_file_name; 첨부파일이 1개 이상일 수 있기 때문에 이렇게 쓰지 않는다.
+	//게시물등록시 게시물은 1개인데 첨부파일은 1개이상일때 DB에는 없는 가상멤버필드를 2개 만듭니다.(한 필드엔 하나만 입력 가능하기 때문)
+	private String[] save_file_names;
+	private String[] real_file_names;
+	
+	public String[] getSave_file_names() {
+		return save_file_names;
+	}
+	public void setSave_file_names(String[] save_file_names) {
+		this.save_file_names = save_file_names;
+	}
+	public String[] getReal_file_names() {
+		return real_file_names;
+	}
+	public void setReal_file_names(String[] real_file_names) {
+		this.real_file_names = real_file_names;
+	}
+	
 	//디버그용 toString() 생성
 	@Override
 	public String toString() {
