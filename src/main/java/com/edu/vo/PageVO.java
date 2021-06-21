@@ -1,12 +1,11 @@
 package com.edu.vo;
 /**
- * 이 클래스는 공통(회원관리, 게시물관리)으로 사용하는 페이징처리+검색처리 기능을 포함한 파일입니다.
+ * 이 클래스는 공통(회원관리,게시물관리)으로 사용하는 페이징처리+검색기능의 클래스.
  * @author 장효원
- * 
- * 참고로 이 클래스는 오라클, MySql(마리아DB) 등 어디서든 사용할수있는 Get/Set 로직입니다.
+ * 이 클래스는 오라클이든, MySql(마리아DB) 어디서든 공통으로사용 Get/Set. 
+ * 페이징에 사용되는 변수(쿼리변수+VO변수) 아래
  * queryStartNo, queryPerPageNum, page, perPageNum, startPage, endPage
- * search_keyword, search_type
- *
+  * 검색에 사용되는 변수(쿼리변수만): 검색어(search_keyword), 검색조건(search_type)
  */
 public class PageVO {
 	private String board_type;//게시판 종류를 표시하는 전용 변수추가
@@ -25,11 +24,12 @@ public class PageVO {
 	
 	@Override
 	public String toString() {
-		return "PageVO [queryStartNo=" + queryStartNo + ", queryPerPageNum=" + queryPerPageNum + ", page=" + page
-				+ ", perPageNum=" + perPageNum + ", totalCount=" + totalCount + ", startPage=" + startPage
-				+ ", endPage=" + endPage + ", prev=" + prev + ", next=" + next + ", search_keyword=" + search_keyword
-				+ ", search_type=" + search_type + "]";
+		return "PageVO [board_type=" + board_type + ", queryStartNo=" + queryStartNo + ", queryPerPageNum="
+				+ queryPerPageNum + ", page=" + page + ", perPageNum=" + perPageNum + ", totalCount=" + totalCount
+				+ ", startPage=" + startPage + ", endPage=" + endPage + ", prev=" + prev + ", next=" + next
+				+ ", search_keyword=" + search_keyword + ", search_type=" + search_type + "]";
 	}
+
 	//Get,Set용 메서드 추가
 	public String getBoard_type() {
 		return board_type;
