@@ -29,7 +29,7 @@ public class CommonUtil {
 	private IF_MemberService memberService; //스프링빈을 주입받아서(DI) 객체 준비
 	
 	//첨부파일이 이미지인지 아닌지 확인하는 데이터생성
-	private ArrayList<String> checkImageArray = new ArrayList<String>() {
+	private ArrayList<String> checkImgArray = new ArrayList<String>() {
 		{
 		add("gif");
 		add("jpg");
@@ -37,8 +37,11 @@ public class CommonUtil {
 		add("png");
 		add("bmp");
 		}
-	};
-	
+	};	
+	public ArrayList<String> getCheckImgArray() {
+		return checkImgArray;
+	}
+
 	//ID중복체크를 RestAPI서버 맛보기로.(제대로 만들려면 @RestController로 만들어야함./댓글)
 	@RequestMapping(value="/id_check", method=RequestMethod.GET)
 	@ResponseBody //반환받은 값의 헤더값을 제외하고 내용(body)만 반환하겠다는 명시.
