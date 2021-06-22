@@ -1,5 +1,7 @@
 package com.edu.util;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -25,6 +27,17 @@ public class CommonUtil {
 	private Logger logger = LoggerFactory.getLogger(CommonUtil.class);
 	@Inject
 	private IF_MemberService memberService; //스프링빈을 주입받아서(DI) 객체 준비
+	
+	//첨부파일이 이미지인지 아닌지 확인하는 데이터생성
+	private ArrayList<String> checkImageArray = new ArrayList<String>() {
+		{
+		add("gif");
+		add("jpg");
+		add("jpeg");
+		add("png");
+		add("bmp");
+		}
+	};
 	
 	//ID중복체크를 RestAPI서버 맛보기로.(제대로 만들려면 @RestController로 만들어야함./댓글)
 	@RequestMapping(value="/id_check", method=RequestMethod.GET)

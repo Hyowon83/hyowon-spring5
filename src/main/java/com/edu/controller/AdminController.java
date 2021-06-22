@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.edu.service.IF_BoardService;
 import com.edu.service.IF_BoardTypeService;
 import com.edu.service.IF_MemberService;
+import com.edu.vo.AttachVO;
 import com.edu.vo.BoardTypeVO;
+import com.edu.vo.BoardVO;
 import com.edu.vo.MemberVO;
 import com.edu.vo.PageVO;
 
@@ -43,8 +45,32 @@ public class AdminController {
 	private IF_BoardService boardService;//DI으로 스프링빈을 주입해서 객체로 생성
 	
 	//게시물 상세보기 폼으로 접근하지 않고 URL쿼리 스트링으로 접근합니다.(GET으로 접근한다는 뜻)
-	@RequestMapping(value="/admin/board/board",method=RequestMethod.GET)
-	public String 
+	@RequestMapping(value="/admin/board/board_view",method=RequestMethod.GET)
+	public String board_view(@RequestParam("bno")Integer bno, @ModelAttribute("pageVO")PageVO pageVO, Model model) throws Exception {
+		BoardVO boardVO = boardService.readBoard(bno);
+		
+		//첨부파일부분 attach데이터도 board_view.jsp로 이동해야 함(아래)
+		List<AttachVO> files = boardService.readAttach(bno);
+		//배열객체 생성구조 : String[] 배열명 = new String[배열크기];
+		//개발자가 만든 클래스형 객체 boardVO는 개발자가 만든메소드 사용
+		//반면, List<AttachVO> files List클래스형 객체 files는 내장형 메소드 = .size()
+		String[] save_file_names = new String[files.size()];
+		String[] real_file_names = new String[files.size()];
+		//attach 테이블안의 해당 bno게시물의 첨부파일 이름을 파싱해서 jsp로 보내주는 과정(아래)
+		int cnt = 0;
+		for(AttachVO file_name:files) { //files라는 다수의 레코드에서 한개의 레코드씩 추출
+			save_file_names[cnt] = file_name.getSave_file_name();
+			real_file_names[cnt] = file_name.getReal_file_name();
+			cnt = cnt + 1; //cnt++;
+		}
+		//위 for문은 세로데이터(다수레코드)를 가로데이터(한개의 레코드이면서 배열)로 변경해줌.
+		boardVO.setSave_file_names(save_file_names); //파싱한 결과 SET //다운로드 로직.
+		boardVO.setReal_file_names(real_file_names); //boardVO에 Set //화면에 보이기 위함.
+		model.addAttribute("boardVO", boardVO); //게시물 + 첨부파일명 2개 이상
+		//업로드한 파일이 이미지인지 아닌지 확인하는 용도의 데이터입니다.(이미지일때 미리보기에 img 태그를 사용하기 위해서.)
+		model.addAttribute("checkImgArray", null);
+		return "admin/board/board_view";
+	}
 	
 	//게시물 목록은 폼으로 접근하지 않고 URL로 접근하기 때문에 GET방식으로처리
 	@RequestMapping(value="/admin/board/board_list", method=RequestMethod.GET)
