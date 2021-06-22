@@ -1,5 +1,6 @@
 package com.edu.controller;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,38 +48,62 @@ public class AdminController {
 	@Inject
 	private CommonUtil commonUtil;
 	
-	//게시물 상세보기 폼으로 접근하지 않고 URL쿼리 스트링으로 접근(GET)
-		@RequestMapping(value="/admin/board/board_view", method=RequestMethod.GET)
-		public String board_view(@RequestParam("bno")Integer bno,@ModelAttribute("pageVO")PageVO pageVO, Model model) throws Exception {
-			BoardVO boardVO = boardService.readBoard(bno);
-			
-			//첨부파일 부분 attach데이터도 board_view.jsp로 이동해야 함(아래)
-			List<AttachVO> files = boardService.readAttach(bno);
-			logger.info("debug19: "+ files);
-			//배열객체 생성구조: String[] 배열명 = new String[배열크기];
-			//개발자가 만든 클래스형 객체 boardVO는 개발자가 만든 메서드 사용
-			//반면, List<AttachVO> files List클래스형 객체 files는 내장형 메서드 = .size()
-			String[] save_file_names = new String[files.size()];
-			String[] real_file_names = new String[files.size()];
-			//attach테이블안의 해당bno게시물의 첨부파일 이름 파싱해서 jsp로 보내주는 과정(아래)
-			int cnt = 0;
-			for(AttachVO file_name:files) {//files다수레코드 에서 1개의 레코드씩 추출
-				save_file_names[cnt] = file_name.getSave_file_name();
-				real_file_names[cnt] = file_name.getReal_file_name();
-				cnt = cnt + 1;//cnt++;
+	//게시물 삭제는 URL쿼리스트링으로 접근하지 않고 POST방식으로 처리
+	@RequestMapping(value="/admin/board/board_delete",method=RequestMethod.POST)
+	public String board_delete(@RequestParam("bno")Integer bno,PageVO pageVO) throws Exception {
+		//디버그로 삭제할 전역변수 경로 확인하기.
+		logger.info("디버그 전역업로드경로: "+commonUtil.getUploadPath());
+		//DB테이블 삭제한 이후에, 첨부파일이 있으면 삭제처리. 자바에서 파일 핸들링 처리.
+		//기존 등록된 첨부파일 폴더에서 삭제할 UUID(고유한 식별값을 생성하는 클래스) 이름을 추출합니다.(아래)
+		List<AttachVO> delFiles = boardService.readAttach(bno); //해당게시물의 모든 첨부파일을 delFiles객체에 임시로 담아놓는다.
+		boardService.deleteBoard(bno); //첨부파일테이블 삭제 후 게시물테이블 삭제.
+		//물리적으로 파일 삭제처리 시작, 향상된 for문 사용(아래)
+		for(AttachVO file_name:delFiles) {
+			//File클래스는 ("파일이 업로드된 위치","삭제할 파일명"); 두개의 인자가 필요하다.
+			File target = new File(commonUtil.getUploadPath(),file_name.getSave_file_name());
+			if(target.exists()) {
+				target.delete(); //물리적으로 타겟을 지우는 방법.
 			}
-			//위 for은 세로데이터(다수레코드)를 가로데이터(1레코드이면, 배열)에 담아서 1개 레코드boardVO로 만드게 목적.
-			boardVO.setSave_file_names(save_file_names);//파싱한 결과 Set//다운로드로직
-			boardVO.setReal_file_names(real_file_names);//boardVO에 Set//화면에보이기 위함.
-			model.addAttribute("boardVO", boardVO);//게시물 + 첨부파일 명2개이상
-			//업로드한 파일이 이미지인지 아닌지 확인하는 용도의 데이터 입니다.아래(목적:이미지일때 미리보기 img태그를 사용 하기위해서)
-			model.addAttribute("checkImgArray", commonUtil.getCheckImgArray());
-			return "admin/board/board_view";//.jsp생략
 		}
+		String queryString = "page="+pageVO.getPage()+"&search_type="+pageVO.getSearch_type()+"&search_keyword="+pageVO.getSearch_keyword();
+		return "redirect:/admin/board/board_list?"+queryString;
+	}
+	//게시물 상세보기 폼으로 접근하지 않고 URL쿼리 스트링으로 접근(GET)
+	@RequestMapping(value="/admin/board/board_view", method=RequestMethod.GET)
+	public String board_view(@RequestParam("bno")Integer bno,@ModelAttribute("pageVO")PageVO pageVO, Model model) throws Exception {
+		BoardVO boardVO = boardService.readBoard(bno);
+		
+		//첨부파일 부분 attach데이터도 board_view.jsp로 이동해야 함(아래)
+		List<AttachVO> files = boardService.readAttach(bno);
+		logger.info("debug19: "+ files);
+		//배열객체 생성구조: String[] 배열명 = new String[배열크기];
+		//개발자가 만든 클래스형 객체 boardVO는 개발자가 만든 메서드 사용
+		//반면, List<AttachVO> files List클래스형 객체 files는 내장형 메서드 = .size()
+		String[] save_file_names = new String[files.size()];
+		String[] real_file_names = new String[files.size()];
+		//attach테이블안의 해당bno게시물의 첨부파일 이름 파싱해서 jsp로 보내주는 과정(아래)
+		int cnt = 0;
+		for(AttachVO file_name:files) {//files다수레코드 에서 1개의 레코드씩 추출
+			save_file_names[cnt] = file_name.getSave_file_name();
+			real_file_names[cnt] = file_name.getReal_file_name();
+			cnt = cnt + 1;//cnt++;
+		}
+		//위 for은 세로데이터(다수레코드)를 가로데이터(1레코드이면, 배열)에 담아서 1개 레코드boardVO로 만드게 목적.
+		boardVO.setSave_file_names(save_file_names);//파싱한 결과 Set//다운로드로직
+		boardVO.setReal_file_names(real_file_names);//boardVO에 Set//화면에보이기 위함.
+		model.addAttribute("boardVO", boardVO);//게시물 + 첨부파일 명2개이상
+		//업로드한 파일이 이미지인지 아닌지 확인하는 용도의 데이터 입니다.아래(목적:이미지일때 미리보기 img태그를 사용 하기위해서)
+		model.addAttribute("checkImgArray", commonUtil.getCheckImgArray());
+		return "admin/board/board_view";//.jsp생략
+	}
 	
 	//게시물 목록은 폼으로 접근하지 않고 URL로 접근하기 때문에 GET방식으로처리
 	@RequestMapping(value="/admin/board/board_list", method=RequestMethod.GET)
 	public String board_list(@ModelAttribute("pageVO")PageVO pageVO, Model model) throws Exception {
+		//게시판 타입이 null일 때 기본값으로 notice를 추가
+		if(pageVO.getBoard_type() == null) {
+			pageVO.setBoard_type("notice");
+		}
 		//페이징처리를 위한 기본값 추가
 		if(pageVO.getPage() == null) {
 			pageVO.setPage(1);
@@ -195,7 +220,7 @@ public class AdminController {
 		//위 출력값 memberVO 1개의 레코드를 model를 이용해서 member_view.jsp 보냅니다.(아래)
 		model.addAttribute("memberVO", memberService.readMember(user_id));
 		//model.addAttribute("pageVO", pageVO);
-	//아래 페이지 반환시(렌더링) @ModelAttribute("pageVO")에 의해서 pageVO.page변수값으로 jsp보냅니다.
+		//아래 페이지 반환시(렌더링) @ModelAttribute("pageVO")에 의해서 pageVO.page변수값으로 jsp보냅니다.
 		return "admin/member/member_view";//상태경로 폴더파일위치
 	}
 	@RequestMapping(value="/admin/member/member_list", method=RequestMethod.GET)
