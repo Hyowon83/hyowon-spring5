@@ -104,7 +104,7 @@
             </div>
             <input name="page" value="${pageVO.page}" type="hidden">
             <input name="search_type" value="${pageVO.search_type}" type="hidden">
-            <input name="search_keyword" value="${pageVO.search_keyword}" type="hidden">
+            <%-- <input name="search_keyword" value="${pageVO.search_keyword}" type="hidden"> --%>
             <input name="bno" value="${boardVO.bno}" type="hidden">
           </form>
         </div>
@@ -227,14 +227,15 @@
 <%@ include file="../include/footer.jsp" %>
 <script>
 $(document).ready(function(){
-	var form_view = $("form[name='form_view']");
+	var form_view = $("form[name='form_view']");//전역변수
 	$("#btn_list").click(function(){
+		//여기서는 함수내 변수
 		form_view.attr("action","/admin/board/board_list");
-		form_view.attr("method","get"); //폼의 설정된 메소드인 post를 목록으로 넘어갈때 get으로 변경
+		form_view.attr("method","get");//폼의 설정된 메서드 post 에서 get으로 변경
 		form_view.submit();
 	});
 	$("#btn_delete").click(function(){
-		if(confirm('정말로 삭제 하시겠습니까?')) {
+		if(confirm('정말로 삭제 하시겠습니까?')) {//Yes를 클릭하면 아래내용 실행
 			form_view.attr("action","/admin/board/board_delete");
 			form_view.submit();
 		}

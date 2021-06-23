@@ -48,24 +48,25 @@ public class AdminController {
 	@Inject
 	private CommonUtil commonUtil;
 	
-	//게시물 삭제는 URL쿼리스트링으로 접근하지 않고 POST방식으로 처리
-	@RequestMapping(value="/admin/board/board_delete",method=RequestMethod.POST)
+	//게시물 삭제는 URL쿼리스트링으로 접근하지 않고, post방식으로 처리.
+	@RequestMapping(value="/admin/board/board_delete", method=RequestMethod.POST)
 	public String board_delete(@RequestParam("bno")Integer bno,PageVO pageVO) throws Exception {
-		//디버그로 삭제할 전역변수 경로 확인하기.
-		logger.info("디버그 전역업로드경로: "+commonUtil.getUploadPath());
-		//DB테이블 삭제한 이후에, 첨부파일이 있으면 삭제처리. 자바에서 파일 핸들링 처리.
-		//기존 등록된 첨부파일 폴더에서 삭제할 UUID(고유한 식별값을 생성하는 클래스) 이름을 추출합니다.(아래)
-		List<AttachVO> delFiles = boardService.readAttach(bno); //해당게시물의 모든 첨부파일을 delFiles객체에 임시로 담아놓는다.
-		boardService.deleteBoard(bno); //첨부파일테이블 삭제 후 게시물테이블 삭제.
-		//물리적으로 파일 삭제처리 시작, 향상된 for문 사용(아래)
+		//디버그 삭제할 전역변수 경로 확인
+		logger.info("디버그 전역업로드경로: " + commonUtil.getUploadPath());
+		//DB테이블삭제한 이후, 첨부파일부터 있으면 삭제처리. 자바에서 파일핸들링처리
+		//기존 등록된 첨부파일 폴더에서 삭제할 UUID(고유한식별값생성클래스)이름을 추출합니다.(아래)
+		List<AttachVO> delFiles = boardService.readAttach(bno);//해당게시물의 모든 첨부파일 delFiles 에 임시로 담아 놓습니다.
+		boardService.deleteBoard(bno);//첨부파일테이블삭제 후 게시물 테이블 삭제
+		//물리적으로 파일삭제 처리 시작, 향상된 for문사용
 		for(AttachVO file_name:delFiles) {
-			//File클래스는 ("파일이 업로드된 위치","삭제할 파일명"); 두개의 인자가 필요하다.
+			//File클래스는 ("파일의 업로드된 위치","삭제할 파일명");
 			File target = new File(commonUtil.getUploadPath(),file_name.getSave_file_name());
 			if(target.exists()) {
-				target.delete(); //물리적으로 타겟을 지우는 방법.
+				target.delete();//물리적인 파일 지우는 명령
 			}
 		}
-		String queryString = "page="+pageVO.getPage()+"&search_type="+pageVO.getSearch_type()+"&search_keyword="+pageVO.getSearch_keyword();
+		
+		String queryString = "page="+pageVO.getPage()+"&search_type="+pageVO.getSearch_type();
 		return "redirect:/admin/board/board_list?"+queryString;
 	}
 	//게시물 상세보기 폼으로 접근하지 않고 URL쿼리 스트링으로 접근(GET)
@@ -90,7 +91,7 @@ public class AdminController {
 		}
 		//위 for은 세로데이터(다수레코드)를 가로데이터(1레코드이면, 배열)에 담아서 1개 레코드boardVO로 만드게 목적.
 		boardVO.setSave_file_names(save_file_names);//파싱한 결과 Set//다운로드로직
-		boardVO.setReal_file_names(real_file_names);//boardVO에 Set//화면에보이기 위함.
+		boardVO.setReal_file_names(real_file_names);//boardVO에 Set//화면에보이는데
 		model.addAttribute("boardVO", boardVO);//게시물 + 첨부파일 명2개이상
 		//업로드한 파일이 이미지인지 아닌지 확인하는 용도의 데이터 입니다.아래(목적:이미지일때 미리보기 img태그를 사용 하기위해서)
 		model.addAttribute("checkImgArray", commonUtil.getCheckImgArray());
@@ -100,7 +101,7 @@ public class AdminController {
 	//게시물 목록은 폼으로 접근하지 않고 URL로 접근하기 때문에 GET방식으로처리
 	@RequestMapping(value="/admin/board/board_list", method=RequestMethod.GET)
 	public String board_list(@ModelAttribute("pageVO")PageVO pageVO, Model model) throws Exception {
-		//게시판 타입이 null일 때 기본값으로 notice를 추가
+		//게시판타입이 null일때 기본값으로 notice를 추가
 		if(pageVO.getBoard_type() == null) {
 			pageVO.setBoard_type("notice");
 		}
@@ -184,7 +185,7 @@ public class AdminController {
 		}
 		memberService.updateMember(memberVO);//반환값이 없습니다.
 		//redirect로 페이지를 이동하면, model로 담아서 보낼수 없습니다. 쿼리스트링(URL?)으로 보냅니다.
-		String queryString = "user_id="+memberVO.getUser_id()+"&page="+pageVO.getPage()+"&search_type="+pageVO.getSearch_type()+"&search_keyword="+pageVO.getSearch_keyword();
+		String queryString = "user_id="+memberVO.getUser_id()+"&page="+pageVO.getPage()+"&search_type="+pageVO.getSearch_type();
 		return "redirect:/admin/member/member_update_form?"+queryString;
 	}
 	//아래 경로는 수정폼을 호출=화면에 출력만=렌더링만 
@@ -220,7 +221,7 @@ public class AdminController {
 		//위 출력값 memberVO 1개의 레코드를 model를 이용해서 member_view.jsp 보냅니다.(아래)
 		model.addAttribute("memberVO", memberService.readMember(user_id));
 		//model.addAttribute("pageVO", pageVO);
-		//아래 페이지 반환시(렌더링) @ModelAttribute("pageVO")에 의해서 pageVO.page변수값으로 jsp보냅니다.
+	//아래 페이지 반환시(렌더링) @ModelAttribute("pageVO")에 의해서 pageVO.page변수값으로 jsp보냅니다.
 		return "admin/member/member_view";//상태경로 폴더파일위치
 	}
 	@RequestMapping(value="/admin/member/member_list", method=RequestMethod.GET)
