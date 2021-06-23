@@ -48,6 +48,21 @@ public class AdminController {
 	@Inject
 	private CommonUtil commonUtil;
 	
+	//게시물 수정처리는 POST로만 접근가능
+	@RequestMapping(value="/admin/board/board_update", method=RequestMethod.POST)
+	public String board_update(BoardVO boardVO, PageVO pageVO) throws Exception {
+		String rawContent = boardVO.getContent();
+		String secContent = commonUtil.unScript(rawContent);
+		boardVO.setContent(secContent);
+		String rawTitle = boardVO.getTitle();
+		String secTitle = commonUtil.unScript(rawTitle);
+		boardVO.setTitle(secTitle);
+		boardService.updateBoard(boardVO);//게시물수정
+		//첨부파일 작업전, 시큐어코딩 : 입력/수정시 시큐어코딩적용O , 뷰화면 에서 시큐어X 
+		
+		String queryString = "bno="+boardVO.getBno()+"&page="+pageVO.getPage()+"&search_type="+pageVO.getSearch_type();
+		return "redirect:/admin/board/board_view?"+queryString;//수정한 이후에는 board_view페이지로 이동:새로고침방지하기 위해서 redirect사용
+	}
 	//게시물 수정폼은 URL쿼리스트링으로 접근
 	@RequestMapping(value="/admin/board/board_update_form", method=RequestMethod.GET)
 	public String board_update_form(Model model, @RequestParam("bno")Integer bno, @ModelAttribute("pageVO") PageVO pageVO) throws Exception {
