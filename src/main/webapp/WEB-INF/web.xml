@@ -37,6 +37,7 @@
 		웹프로그램실행시 제일 먼저 실행되는 web.xml에 UTF-8유니코드 인코딩필터를 설정을 합니다.
 	-->
 	<filter>
+<<<<<<< HEAD
 	  <filter-name>encoding</filter-name>
 	  <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
 	  <init-param>
@@ -58,3 +59,27 @@
 	    <url-pattern>/</url-pattern>
 	</filter-mapping>
 </web-app>
+=======
+     <filter-name>encoding</filter-name>
+     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+     <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+     </init-param>
+   </filter>   
+   <filter-mapping>
+     <filter-name>encoding</filter-name>
+     <url-pattern>/*</url-pattern>
+   </filter-mapping>
+   <!-- URL요청 Endpoint에서 PATCH,Delete,PUT 부분은 10년전엔 아예 없던 기능이라 여전히 지원하지 않는 구버전을 위해 호환성 추가 -->
+   <filter>
+	    <filter-name>hiddenHttpMethodFilter</filter-name>
+	    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>hiddenHttpMethodFilter</filter-name>
+	    <url-pattern>/</url-pattern>
+	</filter-mapping>
+   
+</web-app>
+>>>>>>> branch 'master' of https://github.com/Hyowon83/hyowon-spring5.git
