@@ -8,14 +8,15 @@
 - [공지]06-17 목요일(4교시) UI 디자인 시험 있습니다.(화면기획서XLS제작, 화면설계서PPT제출용)OK.
 - 관리자단 게시판 생성관리 CRUD 처리.(3.AOP기능구현)OK.
 - 관리자단 게시물관리 CRUD 처리(4.파일업로드구현,5.트랜잭션구현).
-- ---------------------
 - 관리자단 댓글 CRUD 처리(6.RestAPI기능구현-개발트렌드).
-- 관리자단 왼쪽메뉴 UI 메뉴 고정시키기(7.jQuery로 구현).
+- 관리자단 왼쪽메뉴 UI 메뉴 고정시키기(7.jQuery로 구현).-관리자단 마무리.
 - 사용자단 로그인 화면 JSP로 만들기.
 - 로그인처리 및 관리자 권한체크 기능 추가(8.스프링시큐리티구현).
+- 사용자단 회원가입, 수정, 탈퇴 JSP기능 추가.
 - ======== 3주간 작업내역 끝(07.02금) ===================
 - ======== 2주간 작업내역 시작 (사용자단은 관리자단 로직을 사용합니다.)========
-- 사용자단 회원가입, 수정, 탈퇴 JSP기능 추가.
+- 헤로쿠 클라우드 준비작업.
+- 관리자단 대시보드작업.
 - 사용자단 게시판 CRUD 처리.
 - 사용자단 댓글 CRUD 처리.
 - 헤로쿠 클라우드에 배포(9.클라우드 배포CI/CD구현-개발트렌드).깃(최신소스)-연동-헤로쿠(배포)
@@ -25,13 +26,84 @@
 - ======== 2주간 작업내역 끝(07.16금) ===================
 - 헤로쿠 클라우드에 배포할때, 매퍼폴더의 mysql폴더내의 쿼리에 now()를 date_add(now(3), interval 9 HOUR) 변경예정.(이유는 DB서버 타임존 미국이기 때문에)
 
-#### 20210629(화) 작업예정.
+#### 20210705(월) 작업예정.
+- 헤로쿠 클라우드에서 App 생성
+- 우리프로젝트에 HsqlDB를 생성.(메이븐에서 Hsql모듈을 업데이트하면, 사용가능)
+- 오라클은 로컬에서 개발, HsqlDB는 헤로쿠 클라우드용을 개발할 수 있도록 root-context.xml에서 설정예정.
+- 현재 까지 작업한 소스를 여러분 이름 도메인으로배포예정 kimilguk-spring5.herokuapp.com
+- 관리자단 대시보드 작업예정.
+- 사용자단 게시물관리 CRUD작업예정.
+- 사용자단 메인페이지(대시보드) 작업예정.
+
+#### 20210702(금) 작업.
+- 수정/탈퇴(마이페이지) JSP기능 추가 마무리OK.
+- 사용자단 회원가입 작업OK.
+- form폼에서 name은 VO/매퍼쿼리 필드명동일, id는 선택해서 jsp(UI)단에서 제어(j쿼리)할때 사용.
+- 사용자단 에러발생시 이쁘게 보이게 화면처리.
+- error_spring.jsp 만듭니다.
+- 위 jsp를 에러발생시(Exception) 무조건 나오게 처리: AOP중 @ControllerAdvice로 구현합니다.
+- 위 어드바이스컨트롤러에서 에러메세지를 캐치해서 jsp에러페이지로 보내서, 에레메세지를 이쁘게 확인합니다.
+- 404에러는 컨트롤러에서 발생되지 않습니다. 그래서, 별도파일을 만들어야 합니다.
+- 톰캣서버에서 발생되는 에러코드404이기 때문에 web.xml에서 설정을 추가합니다.
+- 404코드가 발생시 error_404.jsp와 바인딩되는 설정입니다.
+- 홈컨트롤러에서 Get /home/error/error_404경로추가
+- -----------------------------------------
+- 헤로쿠 클라우드에 배포준비예정.
+- 헤로쿠 클라우드는 미국의 회사로서 컨테이너를 제공하는 회사
+- 컨테이너는 리눅스OS>톰캣WAS>자바JVM>스프링>컨테이너에 포함됨 기본.
+- 외부 서버는(DB) Add on이라는 이름으로 사용가능
+- 무료: PostgeresDB(조건없음), 마리아DB(신용카드등록필수)
+- 유료: Mysql(유료)
+- HsqlDB로 연동해서 헤로쿠에 배포예정. http://hsqldb.org/
+- 100% Java Database: 임베디드DB, 메모리DB, 서버를 설치할 필요 Hsql이라는 Maven모듈만 있으면가능
+- 프로토타입 작업시 주로 사용.(특징, 쿼리는 Mysql과 99% 동일)
+
+#### 20210701(목) 작업.
+- 어제 작업한 security-context를 데이터 변수값의 이동기준으로 다시 설명.
+- 수업 시작전 깃허브 암호정책 변경으로 토큰사용하는 방법 공유, 8월부터 변경됨.
+- 람다식사용예 : https://github.com/miniplugin/SQLite-kimilguk/blob/master/app/src/main/java/com/human/sqlite_kimilguk/MainActivity.java
+- 어제 시큐리티적용 부분 확인(web.xml에서 누락된 부분 모두 추가)
+
+```
+<!-- 스프링 시큐리티때문에 필터(걸러주는)추가 -->
+<filter>
+	<filter-name>springSecurityFilterChain</filter-name>
+	<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+</filter>
+<filter-mapping>
+	<filter-name>springSecurityFilterChain</filter-name>
+	<url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+- 어제 시큐리티 context 누락된 부분 추가(security-context.xml)
+
+```
+<security:authentication-provider>
+	<security:password-encoder ref="passwordEncoder" />
+</security:authentication-provider>
+<!-- 위 쿼리에서 사용할 패스워드 암호화 id passwordEncoder 빈 클래스를 생성(아래) -->
+<bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+```
+- 스프링시큐리티 로그인및 권한체크 설정 후 사용자단 로그인 구현 예정.(관리자단 끝 이면서, 사용자단 시작): 사용자단 로그인 / 로그아웃 기능 처리OK.
+
+#### 20210630(수) 작업.
+- 댓글 Delete 구현 후 마무리OK.
+
+#### 20210629(화) 작업.
+- json데이터(1개레코드=K:V무제한형태)가 자바의 List데이터(1개레코드=K:V제한형)와 대부분 같음. 틀린점은 K:V 형태는 같으나 V값이 무제한,제한
+- 게시물 상세보기 페이지에는 
+- 게시물관련내용: 컨트롤러에서 보낸 model객체에 담긴 변수값을 jps사용.
+- 댓글 관련내용: Rest컨트롤러에서 보낸 ResponseEntity객체에 담긴 변수값을 jsp사용.
+- RestAPI가 주로 사용되는 곳은: 1페이지로 서비스가 이루어지는 곳에서 주로 RestAPI를 사용
+- 데이터를 시각화하는 페이지에 주로사용: 구글맵,네이버맵기반의 데이터를 시각화해서 수익창출 서비스.
+- RestAPI가 스프링과 노드js 연동하면 + 구글맵, RestAPI실시간으로 결과공유할 수 있게 만든것.
 - 수업전 아래 내용 확인 후 진도 나갈 예정 입니다.
 - reply컨트롤러에서 requestMapping 밸류값 넣을때 절대경로인 /로 시작하시는 것이 맞습니다.
-- Rest컨트롤러에서 CRUD중 Delete마무리.
-- jsp에서 $.ajax를 이용해서 RestAPI서버 사용. -댓글 마무리...
-- 스프링시큐리티 로그인및 권한체크 설정 후 사용자단 로그인 구현 예정.(관리자단 끝 이면서, 사용자단 시작)
-- 사용자단 회원가입, 수정, 탈퇴 JSP기능 추가예정.
+- Rest컨트롤러에서 CRUD중 Delete마무리OK.
+- jsp에서 1페이지만 작업하면 끝 $.ajax를 이용해서 RestAPI서버 사용.
+- $.ajax로 CRUD를 구현할때는 전송값은 json데이터(submit으로 않보냄)로 보내고(form태그가 필요없음),:submit은 폼태그가 있을때만 작동되는 브라우저 내장 명령입니다.
+- , 받은때는 List(json),CUD(문자열)
+- 댓글 RUD는 모달(팝업)창에서 작업시작.
 
 #### 20210628(월) 작업.
 - 댓글 VO제작->매퍼쿼리제작->DAO클래스제작->Service클래스제작/여기까지-
