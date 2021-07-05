@@ -38,14 +38,6 @@
 <script>
 // 회원가입 전용 유효성 검사 부분
 $(document).ready(function() {
-	$('.appForm').validate({
-		rules:{
-			password:"required",//password 인풋태그의 이름,입력값 공백체크
-			password_chk: {     //password_chk 인풋태그의 이름.
-				equalTo:'#password_lbl'//input 태그의 id값과 비교
-			}
-		}
-	});
 	// 유효성검사 확인 메세지를 한글로 출력하기
 	$.extend($.validator.messages, {
 		required:"필수 항목 입니다.",
@@ -85,7 +77,7 @@ $(document).ready(function() {
 					<li class="clear">
 						<label for="password_lbl" class="tit_lbl pilsoo_item">암호</label>
 						<div class="app_content">
-							<input type="password" name="user_pw" class="w100p" id="password_lbl" placeholder="비밀번호를 입력해주세요" required/>
+							<input type="password" name="user_pw" class="w100p" id="password_lbl" placeholder="비밀번호를 입력해주세요" />
 						</div>
 					</li>
 					<li class="clear">
@@ -124,8 +116,8 @@ $(document).ready(function() {
 					</li>
 				</ul>
 				<p class="btn_line">
-				<button class="btn_baseColor">정보수정</button>
-				<button class="btn_baseColor">회원탈퇴</button>
+				<button type="submit" class="btn_baseColor" style="cursor:pointer;">정보수정</button>
+				<button type="button" class="btn_baseColor" id="btn_leave" style="cursor:pointer;">회원탈퇴</button>
 				</p>	
 			</fieldset>
 		</form>
@@ -136,3 +128,22 @@ $(document).ready(function() {
 <!-- //메인콘텐츠영역 -->
 
 <%@ include file="../include/footer.jsp" %>
+<script>
+$(document).ready(function(){
+	$("#btn_leave").click(function(){
+		if(confirm('정말로 탈퇴하시겠습니까?')) {
+			//alert("삭제버튼 준비중 입니다.");
+			var form_leave = $("form[name='join_form']");
+			$("option:eq(0)","select[name='enabled']").val("false");//Set
+			//$("select[name='enabled']").html("<option value='false'>탈퇴</option>");//select Set
+			//alert($("select[name='enabled']").val());//Get
+			//위 값을 false, 0 둘중 1개 로 변경 후 submit예정.
+			form_leave.attr("action","/member/mypage_leave");//크롬오동작으로 추가한 코드
+			form_leave.submit();//삭제는 아니고, enabled 필드값을 수정합니다.
+			//탈퇴를 했다면, 로그아웃처리도 같이 되어야 함.
+			//location.replace("/logout");//크롬에서는 오동작해서 자바스크립트처리는 않함.
+		}
+		
+	});
+});
+</script>
