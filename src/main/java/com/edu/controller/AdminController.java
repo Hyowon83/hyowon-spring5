@@ -374,5 +374,15 @@ public class AdminController {
 		return "admin/home";//리턴 경로=접근경로는 반드시 상대경로로 표시
 	}
 	//메인페이지 또는 대시보드에 최신 테이블리스트를 출력하는 방법 2가지(위,model사용
-	//아래, @import방식 : 최신 게시물용도로 사용
+	//아래, <c:import방식 : 최신 게시물용도로 사용 //페이지안에서 컴파일된 다른 페이지를 불러올 수 있음. 개발자B 작업
+		@RequestMapping(value="/admin/latest/latest_board",method=RequestMethod.GET)
+		public String latest_board(@RequestParam(value="board_type",required=false) String board_type,Model model) throws Exception {
+			PageVO pageVO = new PageVO();
+			pageVO.setPage(1);
+			pageVO.setQueryPerPageNum(5);
+			pageVO.setBoard_type(board_type);
+			List<BoardVO> latestBoard = boardService.selectBoard(pageVO);
+			model.addAttribute("latestBoard", latestBoard);
+			return "admin/latest/latest_board";//.jsp생략, 최신게물을 출력하는 결과페이지 생성
+		}
 }
