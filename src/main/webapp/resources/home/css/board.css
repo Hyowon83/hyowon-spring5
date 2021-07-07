@@ -246,7 +246,8 @@ input::placeholder {
     padding: 20px 15px !important;
 }
 .btn_bbs {
-    margin-bottom: 5px;
+	border-style:none;
+    margin-bottom: 0px;
     display: inline-block;
     width: 100%;
     height: 35px;
