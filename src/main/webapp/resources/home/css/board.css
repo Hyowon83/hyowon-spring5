@@ -245,7 +245,7 @@ input::placeholder {
     min-height: 200px; /* 최소높이, 내용이 있든없든 최소높이를 200px로 하지만, 내용이 많으면 200이상으로 자리를 차지할수도 있다. */
     padding: 20px 15px !important;
 }
-.btn_bbs {
+.btn_bbs { /* 모바일 전용 */
 	border-style:none;
     margin-bottom: 0px;
     display: inline-block;
