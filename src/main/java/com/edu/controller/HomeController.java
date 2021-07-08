@@ -97,7 +97,7 @@ public class HomeController {
 		//dB테이블 데이터 가져오기
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("checkImgArray", commonUtil.getCheckImgArray());
-		return "home/board/board_view";//.jsp생략
+		return "home/board/board_view";//.jsp생략 
 	}
 	//게시물 등록 처리 호출 POST 추가
 	@RequestMapping(value="/home/board/board_insert",method=RequestMethod.POST)
