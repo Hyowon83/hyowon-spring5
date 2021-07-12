@@ -13,27 +13,140 @@
 - 사용자단 로그인 화면 JSP로 만들기.
 - 로그인처리 및 관리자 권한체크 기능 추가(8.스프링시큐리티구현).
 - 사용자단 회원가입, 수정, 탈퇴 JSP기능 추가.
-- ======== 3주간 작업내역 끝(07.02금) ===================
-- ======== 2주간 작업내역 시작 (사용자단은 관리자단 로직을 사용합니다.)========
 - 헤로쿠 클라우드 준비작업.
 - 관리자단 대시보드작업.
 - 사용자단 게시판 CRUD 처리.
-- 사용자단 댓글 CRUD 처리.
 - 헤로쿠 클라우드에 배포(9.클라우드 배포CI/CD구현-개발트렌드).깃(최신소스)-연동-헤로쿠(배포)
+- 사용자단 댓글 CRUD 처리.
 - 문서작업(제출용)
-- [실습시간이 가능하다면: 알고리즘 다이어그램기반으로 자바코딩테스트]
+- [실습시간이 가능하다면: 관리자대시보드에서 회원ID 이미지업로드 및 보이기 처리)]
 - [실습시간이 가능하다면: 사용자단 네이버아이디로그인 처리(10.외부RestAPI구현).]
-- ======== 2주간 작업내역 끝(07.16금) ===================
+- [실습시간이 가능하다면: 알고리즘 다이어그램기반으로 자바코딩테스트]
 - 헤로쿠 클라우드에 배포할때, 매퍼폴더의 mysql폴더내의 쿼리에 now()를 date_add(now(3), interval 9 HOUR) 변경예정.(이유는 DB서버 타임존 미국이기 때문에)
+#### 작업일정.
+- 7월9일(금) 모두 줌으로 수업
+- 7월12(월) 학원이사로 휴강
+- 7월13(화) 이사한 학원에서 수업시작(A조대면,B조줌)
+- 7월20(화) 강사 김일국 수업 종료.
 
-#### 20210705(월) 작업예정.
+#### 앞으로 남은 1주일간 작업예정내용 정리.
+- 사용자단 메인페이지(대시보드) 작업예정.
+- 문서작업(제출용)예정.
+- 사용자단 네이버아이디로그인 처리(10.외부RestAPI구현).
+- 관리자대시보드에서 회원ID 이미지업로드 및 보이기 처리예정.(기술참조 https://github.com/miniplugin/kimilguk )
+- jsp템플릿인 tiles(타일즈), siteMesh(사이트메쉬), velocity(벨로시티) 등이 있습니다.
+- 현업에서는 위 3가지 템플릿중 1가지는 항상 사용하기 때문에 대표적으로 타일즈를 실습할 예정입니다.
+- 위 3가지 구조는 비슷하기 때문에 1가지만 아셔도 다른 jsp템플릿 적용시 응용가능합니다.
+- 알고리즘 다이어그램기반으로 자바코딩테스트예정(깃 it강의저장소자료이용).
+
+#### 20210713(화) 작업예정.
+- 사용자단 메인페이지(대시보드) 작업예정.
+- 문서작업(제출용)예정.
+- 사용자단 네이버아이디로그인 처리(10.외부RestAPI구현).
+
+#### 20210709(금) 작업.
+- 게시물 CRUD시 본인글 인지 확인 하는 메서드를 공통으로 구현하기(많이사용하는 방향으로)OK.
+
+```
+@Around("execution(* com.edu.controller.HomeController.board_delete(..)) || execution(* com.edu.controller.HomeController.board_update*(..))")
+    public Object board_deleteMethod(ProceedingJoinPoint pjp) throws Throwable {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+		if(request != null) {//jsp에서 Get,Post 있을때,
+			BoardVO boardVO = null;
+			String user_id = null;
+			Integer bno = null;
+			logger.info("디버그 메서드네임 가져오기 : " + pjp.getSignature().getName());//기술참조 https://alwayspr.tistory.com/34
+			for(Object object:pjp.getArgs()) {
+				if(object instanceof Integer) {//AOP실행메서드중 매개변수 판단
+					//파마미터가 bno일때 게시판의 writer를 가져오기
+					bno = (Integer) object;
+					boardVO = boardService.readBoard(bno);//아래 조건때문에 추가
+					user_id = boardVO.getWriter();
+				}
+				if(object instanceof BoardVO) {
+					//파라미터가 BoardVO 클래스객체 일때 writer를 가져오기
+					boardVO = (BoardVO) object;
+					user_id = boardVO.getWriter();
+				}
+			}
+			HttpSession session = request.getSession();//클라이언트PC에서 스프링프로젝트 접근시 세션객체
+			if( !user_id.equals(session.getAttribute("session_userid")) && "ROLE_USER".equals(session.getAttribute("session_levels")) ) {
+				FlashMap flashMap = new FlashMap();
+				flashMap.put("msgError", "게시물은 본인글만 수정/삭제 가능합니다.");
+				FlashMapManager flashMapManager = RequestContextUtils.getFlashMapManager(request);
+				flashMapManager.saveOutputFlashMap(flashMap, request, null);
+				String referer = request.getHeader("Referer");//크롬>네트워크>파일>Referer>이전페이지 URL이 존재
+				return "redirect:"+referer;
+			}
+		}
+		Object result = pjp.proceed();//여기서 조인포인트가 실행됩니다.
+		return result;
+	}
+```
+- 사용자단 댓글서비스 작업.(기술참조: http://www.ktword.co.kr/abbr_view.php?m_temp1=5782 )
+- Ajax소스는 프로그램이기 때문에, 디자인과 크게관련없기때문에, admin단 board_view에 있는 
+- ajax코드를 가져다가 사용하면서 커스터마이징.($.ajax에서 complete, beforeSend, async 속성들)
+- ajax에서 디버그하는 방법.
+- 헤로쿠 30분 지나서 휴면모드로 들어가기전, 잠깨우는 기능 추가예정.(스프링 스케줄링사용)
+- 순서1: 외부 모듈 라이브러리 추가(pom.xml에서) -> 메이븐업데이트 -> 
+- 순서2: 스케줄링할 메서드 생성(herokuJobMethod) -> root-context에서 스케줄링 스프링빈 생성
+- 보통 스프링스케줄러를 이용해서 회원들에게 시간기준의 특별한 이벤트가 발생할때, 일괄적으로 메일보내기 기능에 사용.
+- 이력서 작업한 URL을 포트폴리오로 적어 놓으실때, 면접관이 1분정도 대기시간이 필요.
+- 헤로쿠클라우드는 처음접속시 1분정도 대기시간이 필요함(이력서에 명시)
+
+#### 20210708(목) 작업.
+- 사용자단 게시물관리 CRUD중 Delete마무리 후, Update 실습
+- 우리나라 스프링기반 솔루션을 만들던 시기(스프링버전2.5 - 2015년 전후) Rest-Api(jsonview방식), 현재(2021년 스프링버전 5.x사용) Rest-Api(@RestController방식-,@ResponseBody)
+- properties파일을 hsql,cloude 를 1개 cloud통일
+- JsonView방식(고전방식의 RestAPI처리) 실습.
+- JsonView: 컨트롤러에서 뷰단을 반환할때 .jsp(생략)파일명으로 반환(View리졸버의 기본형식)
+- servlet-context.xml에 위 View리졸버라는 스프링빈 설정이 있습니다.
+- 리퀘스트매핑요청에대한 뷰단을 해석(바인딩해 줍니다.)
+- 위 기능을 RestAPI로 대체해서 컨트롤러에서 뷰단을 반환할때 jsp로 반환하지 않고, Json으로 뷰를 반환하는 것을 JsonView 방식이라고 합니다.
+- JsonView방식 사용방법: 1. servlet설정에 스프링빈을 등록합니다.(클래스는 스프링프레임워크에 내장, pom.xml외부 라이브러리모듈을 가져올 필요 없음.)
+- 사용자단에서는 글수정을 글쓴 보인글만 삭제/수정 가능하게 기능추가.(단, 관리자단에서는 admin은 모두 수정/삭제가능)
+
+#### 20210707(수) 작업.
+- 헤로쿠는 30분간 아무작업이 없으면 휴면상태(컨테이너가 내려감) -> 활성상태(컨테이너가 올라감)
+- 컨테이너가 올라가면, 클라우드 자원을 차지하기 때문, 휴면에서 활성화 될때 무료버전은 저장소가 신규생성됩니다.
+- 사용자단 게시물관리 CRUD작업추가진행.
+
+#### 20210706(화) 작업.
+- Hsql데이터베이스는 특징? 메모리DB이기 때문에, 보통 서버를 리스타트하면 DB가 리셋됨(초기화)
+- Hsql은 트랜잭션 기능이 않됨.
+- 데모사이트나, 프로그램의 프로토타입(데모프로그램) 생성시 주로 사용.
+- 메모리 DB를 우리프로젝트에서는 file로 변경해서 , 톰캣을 리스타트해도 없어지지 않게 처리했음.
+- 스프링 1개프로젝트 : 3개월, 5~7명(개발인원), 1Man/1Month 금액을 산출.
+- 280 ~ 650: 400만 = 2800만/1달 = 3달 = 8400만 + 1년유지보수 2000만 = 2억/2000만유지보수 보통 이상
+- 7명: PM(프로젝트매니저)1명-코딩없이 클라이언트와 소통, PL(프로젝트리더)1명, 백엔드개발자(3명), 디자이너(프론트엔드개발1명)+문서작업(1명)
+- 실습: CRUD기본, -> 웹프로그램을 제작(구체적인것은 나중에...)
+- 수업전 mysql폴더의 replyMapper.xml 쿼리파일에서 아래 내용대로 변경합니다.
+- [수정전] limit #{pageVO.queryStartNo}, #{pageVO.queryPerPageNum}
+- [수정후] limit #{queryStartNo}, #{queryPerPageNum}
+- JUnit(스프링테스트방법) - 부메랑(RestApi컨트롤러테스트방법)
+- 스프링백엔드단(logger,이클립스콘솔에서디버그) 
+- 스프링RestApi단=Ajax(로거디버거로하지않고, RestApi리턴값으로 디버그)
+- 관리자단 대시보드 작업. 기반작업에 사용 - 사용자단 메인 최신겔러리, 최신 공지사항 출력에 사용
+- 컴파일 된 jsp(import자바변수값이 들어감)와 컴파일 되기전 jsp(include자바변수값 않들어감)
+
+#### 20210705(월) 작업.
+- App name = Host name = 호스트네임.herokuapp.com(호스트네임<도메인네임)
+- 클라우드 콘테이너 생성시 위 와같은 방식으로 호스트네임 도메인을 부여 합니다.
 - 헤로쿠 클라우드에서 App 생성
+- Deploy에서 에러: No web processes running
+- 현재 프로젝트에 클라우드용 설정파일이 필요 = 헤로쿠에서 Procfile 확장자없는 설정파일이 필요
+- 위 Procfile에서 web processes running 시키는 라인이 추가 되어야 함.
+- 스프링에서 작업해서 배포한다는 의미: ALL or Not ALL
+- PHP는 작업한 개별파일 1개씩 수정해서 올리는 방식(워드프레스, 그누보드 등등)
+- 스프링은 작업한 파일이 1개라도 1개만 올리는 것이 아니고, 모든파일을 컴파일해서 패키징(war파일)한 후 업로드 합니다.
+- hsqldb 외부모듈 pom.xml에 추가.(자바기반 DB사용가능)
 - 우리프로젝트에 HsqlDB를 생성.(메이븐에서 Hsql모듈을 업데이트하면, 사용가능)
 - 오라클은 로컬에서 개발, HsqlDB는 헤로쿠 클라우드용을 개발할 수 있도록 root-context.xml에서 설정예정.
-- 현재 까지 작업한 소스를 여러분 이름 도메인으로배포예정 kimilguk-spring5.herokuapp.com
-- 관리자단 대시보드 작업예정.
-- 사용자단 게시물관리 CRUD작업예정.
-- 사용자단 메인페이지(대시보드) 작업예정.
+- 아래 3가지가 root-context에 추가 됩니다.
+- 1. hsql용 jdbc드라이버를 스프링빈으로 생성하기
+- 2. DB생성 스크립트 실행
+- 3. DB매니저실행하기
+- 현재 까지 작업한 소스를 여러분 이름 도메인으로배포예정 hyowon-spring5.herokuapp.com
 
 #### 20210702(금) 작업.
 - 수정/탈퇴(마이페이지) JSP기능 추가 마무리OK.
