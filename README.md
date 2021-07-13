@@ -33,7 +33,7 @@
 - 사용자단 메인페이지(대시보드) 작업예정.
 - 문서작업(제출용)예정.
 - 사용자단 네이버아이디로그인 처리(10.외부RestAPI구현).
-- 관리자대시보드에서 회원ID 이미지업로드 및 보이기 처리예정.(기술참조 https://github.com/miniplugin/kimilguk )
+- 관리자대시보드에서 회원ID 이미지업로드 및 보이기 처리예정.(기술참조 https://github.com/miniplugin/hyowon )
 - jsp템플릿인 tiles(타일즈), siteMesh(사이트메쉬), velocity(벨로시티) 등이 있습니다.
 - 현업에서는 위 3가지 템플릿중 1가지는 항상 사용하기 때문에 대표적으로 타일즈를 실습할 예정입니다.
 - 위 3가지 구조는 비슷하기 때문에 1가지만 아셔도 다른 jsp템플릿 적용시 응용가능합니다.
@@ -174,7 +174,7 @@
 #### 20210701(목) 작업.
 - 어제 작업한 security-context를 데이터 변수값의 이동기준으로 다시 설명.
 - 수업 시작전 깃허브 암호정책 변경으로 토큰사용하는 방법 공유, 8월부터 변경됨.
-- 람다식사용예 : https://github.com/miniplugin/SQLite-kimilguk/blob/master/app/src/main/java/com/human/sqlite_kimilguk/MainActivity.java
+- 람다식사용예 : https://github.com/miniplugin/SQLite-hyowon/blob/master/app/src/main/java/com/human/sqlite_hyowon/MainActivity.java
 - 어제 시큐리티적용 부분 확인(web.xml에서 누락된 부분 모두 추가)
 
 ```
@@ -663,7 +663,7 @@ DROP USER XE2 CASCADE;
 - Step2클래스에서 MeberService 클래스에 직접접근해서 메서드를 실행하려면 static으로 변경(컴파일시 실행가능한 상태로됨=메모리에 로딩)해야 함. 
 대신, memberServie객체을 이용해서 메서드에 접근할때는 (호출시=런타임시 실행이가능한 상태로됨=메모리에 로딩)
 - 클래스와 상속에 대해서 이론 및 실습
-- https://github.com/miniplugin/spring5-kimilguk/blob/master/src/test/java/kr/or/test/ClassApp.java
+- https://github.com/miniplugin/spring5-hyowon/blob/master/src/test/java/kr/or/test/ClassApp.java
 
 ####20210527(목) 작업내역.
 - 3장 객체와 클래스부터 시작
