@@ -148,7 +148,7 @@ input::placeholder {
 .btn_line {
     padding: 20px 0;
 }
-.btn_line a:first-child {
+.btn_line a:first-child { /* 버튼이 여러개 있을때 적용 */
     margin-left: 0;
 }
 .btn_baseColor {
@@ -166,13 +166,15 @@ input::placeholder {
 }
 /* //게시판리스트 영역 */
 /* ===================================까지 모바일용(위) */
-
-@media all and (min-width: 801px) {
-	/* 태블릿, PC용 스타일 */
+/* //게시판리스트 영역 */
+/* 여기까지가 모바일용 이후 태블릿용 스타일지정 시작 */
+/* 테블릿용 메인페이지 스타일 지정(아래) 801px~무한대까지 재정의 */
+@media all and (min-width:801px) {
+	/* 테블릿+PC용 스타일 */
     .bbsListTbl th:nth-child(1) {
         display: table-cell;
-        width: 8%;
-        margin-top: 7px; /* IE브라우저 호환성(크로싱 브라우징 처리) */
+        width: 6%;
+        margin-top: 7px; /* IE브라우저 호환성=크로싱브라우징 처리 */
     }
     .bbsListTbl th:nth-child(2) {
         width: 65%;
@@ -194,7 +196,7 @@ input::placeholder {
         width: 125px;
         font-weight: normal;
     }
-    .bbsListTbl td a { /* 태블릿, PC용 */
+    .bbsListTbl td a { /* 태블릿+PC용 */
     overflow: inherit; /* 초기화 */
     text-overflow: inherit;
     white-space: inherit;
@@ -203,7 +205,7 @@ input::placeholder {
     }
 }
 
-/* 게시판글보기 영역 */
+/* 게시판 글보기 영역 */
 .bbsview_list {
     padding-bottom: 30px;
     border-top: 2px solid #384d75;
@@ -211,7 +213,7 @@ input::placeholder {
 }
 .bbsview_list li {
     box-sizing: border-box;
-    padding: 0 15px;
+    padding: 0px 15px;
     border-bottom: 1px solid #ccc;
     color: #666;
     font-size: 14px;
@@ -240,9 +242,9 @@ input::placeholder {
     line-height: 40px;
     width: 50%;
 }
-.bbs_content {
+.bbsview_list .bbs_content {
     clear: both; /* float:left,right 기능을 해제합니다. */
-    min-height: 200px; /* 최소높이, 내용이 있든없든 최소높이를 200px로 하지만, 내용이 많으면 200이상으로 자리를 차지할수도 있다. */
+    min-height: 200px;/* 내용이 비었더라도 최소 높이 200px 자리를 차지합니다. 단, 내용이 많으면 200이상으로 자리를 차지합니다. */
     padding: 20px 15px !important;
 }
 .btn_bbs { /* 모바일 전용 */
@@ -257,28 +259,25 @@ input::placeholder {
     color: #fff !important;
     text-align: center;
 }
-/* //게시판글보기 영역 */
-
-/* 태블릿용 메인 페이지 스타일 지정(아래) 801px~1065px(pc.css에서 정의된부분까지, 정의하지 않으면 무한대) */
-@media all and (min-width: 801px) {
-    /* 뷰페이지버튼 스타일 */
-    .btn_bbs {
+/* //게시판 글보기 영역 */
+/* 테블릿용 메인페이지 스타일 지정(아래) 801px~무한대까지 재정의 */
+@media all and (min-width:801px) {
+    /* 뷰페이지 버튼 스타일 */
+	.btn_bbs {
         width: 70px;
         float: none;
         text-align: center;
     }
 }
-/* 게시판글쓰기 영역 */
+
+/* 게시판 글쓰기 폼 */
 .appForm {
-	margin:20px auto;
+	margin:20px auto; /* 좌우로 가운데 정렬시 0 auto */
 	text-align: left;
 }
-.appForm legend {
-	font-size: 0px; /* 스크린리더 */
-}
-.pilsoo_item::before { /* before가상요소는 pilsoo_item 클래스 영역의 앞부분에 내용이 들어감. */
-	/* top:1px; */
-	content: '*'; /* 필수입력 항목에 *이 나옴 */
+.appForm legend { font-size: 0px; } /* 시각장애인용 처리:웹접근성 처리 */
+.pilsoo_item::before { /* before가상요소는 pilsoo_item클래스영역의 앞부분에 내용들어감 */
+	content: '*';
 	display: inline-block;
 	position: absolute;
 	left: 5px;
@@ -288,20 +287,19 @@ input::placeholder {
 	color: red;
 }
 .info_pilsoo {
-	position: relative;
-	padding-left: 20px;
-	padding-bottom: 10px;
-	border-bottom: 2px solid #000;
-	font-size: 15px;
-	color: red;
+    position: relative;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #000;
+    font-size: 15px;
+    color: red;
 }
 .app_list {
-	padding: 10px 0;
-	border-bottom: 1px solid #ccc;
+	padding: 10px 0px;
 }
 .app_list li {
 	position: relative;
-	padding: 10px 0;
+	padding: 10px 0px;
 	border-bottom: 1px solid #ccc;
 }
 .app_list li .tit_lbl {
@@ -322,44 +320,39 @@ input::placeholder {
 }
 .app_content input {
 	border: none;
-	/* width: inherit; */ /* 부모 영역(브라우저 기본값)의 너비값을 input태그가 상속받음 */
+	/* width: inherit; */
+    /* 부모 영역(브라우저기본값)의 input태그의 너비값을 상속 받음=width값을 초기화한다. */
 	box-sizing: border-box;
 	display: inline-block;
 	height: 45px;
-	padding: 0 10px;
-	/*background-color: #fff; 이클립스 내장브라우저에서 나오지 않을때 조치사항 */
+	padding: 0px 10px;
 	line-height: normal;
 	font-size: 15px;
 }
 .appForm textarea {
 	height: 130px;
-	box-sizing: border-box; /* 테두리까지 너비값에 포함시킴 */
+	box-sizing: border-box;/* 테두리까지 너비값에 포함시킴 100% 없으면 100%+2px */
 	padding: 10px;
 	font-size: 15px;
 	letter-spacing: -1px;
 	color: #444;
 	border: none;
 }
-.appForm textarea::placeholder {color: #999;} /* 최신브라우저에 적용 */
-textarea:-ms-input-placeholder {color: #999;} /* 위에 적용되지 않는 ms사브라우저에도 적용(현재는 최소 IE10 이상) */
-/* 크로스 브라우징 */
-input:-ms-input-placeholder {color: #999;}
+.appForm textarea::placeholder { color: #999; } /* 최신브라우저에 적용 */
+textarea:-ms-input-placeholder { color: #999; } /* ms사 브라우저에 적용 최소 현재는 IE10이상 표준 */
 .btn_baseColor {
 	margin-top: 10px;
 }
-/* //게시판글쓰기 영역 */
-
-@media all and (min-width: 801px) {
-    /* 태블릿+PC용 게시판글쓰기 영역 */
- .app_list .tit_lbl {
-     width: 20%;
- }
- .app_list .app_content {
-     width: 79%;
-     float:right;
-     border: 1px solid #ccc;
- }
- .btn_line {text-align: center;}
- .appForm textarea {height: 230px;}
- /* //태블릿+PC용 게시판글쓰기 영역 */
- }
+/* //게시판 글쓰기 폼 */
+@media all and (min-width:801px) {
+    /* 글쓰기 폼 스타일 */
+	.app_list .tit_lbl { width: 20%; }
+	.app_list .app_content {
+		width: 79%;
+		float: right;
+		border: 1px solid #ccc;
+	}
+	.btn_line {text-align: center;}
+	.appForm textarea {height: 230px;}
+	/* //글쓰기 폼 스타일 */
+}
