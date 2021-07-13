@@ -3,7 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="../include/header.jsp" %>
 
-
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -27,42 +26,42 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <!-- 컨텐츠 내용 -->
+        <!-- 콘텐츠 내용 -->
         <div class="card card-primary">
           <div class="card-header">
             <h3 class="card-title">뷰/수정</h3>
           </div>
           <!-- /.card-header -->
           <!-- form start -->
+          <!-- 첨부파일을 전송할때 enctype=필수 없으면, 첨부파일이 전송X -->
           <form name="form_write" method="post" action="/admin/bbs_type/bbs_type_update" enctype="multipart/form-data">
-            <!-- get방식은 검색, post방식은 글쓰기 로그인 등.(get방식하면 입력한 비밀번호가 주소에 뜸) -->
-            <!-- enctype="multipart/form-data": 첨부파일을 전송할 때 필수로 들어가야 함. -->
             <div class="card-body">
               <div class="form-group">
+                <!-- PK고유키,식별자는 수정할수 있으면, 여기 묶여있는 하위 게시물들은 소속잃어 버립니다. 그래서, 수정불가X  -->
                 <label for="board_type">게시판타입</label>
-                <input readonly value="${boardTypeVO.board_type}" name="board_type" type="text" class="form-control" id="board_type" placeholder="게시판 타입을 입력해주세요." required>
+                <input readonly value="${boardTypeVO.board_type}" name="board_type" type="text" class="form-control" id="board_type" placeholder="게시판타입을 입력해 주세요" required>
               </div>
               <div class="form-group">
                 <label for="board_name">게시판이름</label>
-                <input value="${boardTypeVO.board_name}" name="board_name" type="text" id="board_name" class="form-control" placeholder="게시판 명을 입력해주세요." required>
+                <input value="${boardTypeVO.board_name}" name="board_name" type="text" id="board_name" class="form-control" placeholder="게시판명을 입력해주세요." required>
               </div>
               <div class="form-group">
                 <label for="board_sun">출력순서</label>
-                <input value="${boardTypeVO.board_sun}" name="board_sun" type="text" class="form-control" id="board_sun" placeholder="출력순서를 입력해주세요." required>
+                <input value="${boardTypeVO.board_sun}" name="board_sun" type="text" class="form-control" id="board_sun" placeholder="출력순서를 입력해 주세요" required>
               </div>
+              
             </div>
             <!-- /.card-body -->
-            
+
             <div class="card-footer text-right">
               <button type="submit" class="btn btn-primary">수정</button>
-              <button type="button" class="btn btn-danger" id="btn_delete">삭제</button>
+              <button type="button" class="btn btn-warning" id="btn_delete">삭제</button>
               <a href="/admin/bbs_type/bbs_type_list" class="btn btn-default">목록</a>
             </div>
           </form>
         </div>
-        <!-- //컨텐츠 내용 -->
-      </div>
-      <!-- /.container-fluid -->
+        <!-- //콘텐츠 내용 -->
+      </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
   </div>
@@ -71,11 +70,12 @@
 <%@ include file="../include/footer.jsp" %>
 <script>
 $(document).ready(function(){
-      $("#btn_delete").click(function(){
-        if(confirm("정말로 삭제하시겠습니까?"))
-         var form_write = $("form[name='form_write']");
-         form_write.attr("action","/admin/bbs_type/bbs_type_delete");
-         form_write.submit();
-      })
-   });
+	$("#btn_delete").click(function(){
+		if(confirm("정말로 삭제하시겠습니까?")) {
+			var form_write = $("form[name='form_write']");
+			form_write.attr("action","/admin/bbs_type/bbs_type_delete");
+			form_write.submit();
+		}
+	});
+});
 </script>

@@ -22,7 +22,7 @@
       <table class="table m-0">
         <thead>
         <tr>
-          <th>제목[댓글 수]</th>
+          <th>제목[댓글수]</th>
           <th>작성자</th>
           <th>조회수</th>
           <th>작성일</th>
@@ -30,15 +30,19 @@
         </thead>
         <tbody>
         <c:forEach var="boardVO" items="${latestBoard}">
-	        <tr>
-	          <td><a href="/admin/board/board_view?bno=${boardVO.bno}&page=1">${boardVO.title}[${boardVO.reply_count}]</a></td>
+        	<tr>
+	          <td><a href="/admin/board/board_view?bno=${boardVO.bno}&page=1">
+	          ${boardVO.title}[${boardVO.reply_count}]
+	          </a></td>
 	          <td>${boardVO.writer}</td>
 	          <td><span class="badge badge-success">${boardVO.view_count}</span></td>
 	          <td>
-	            <div class="sparkbar" data-color="#00a65a" data-height="20"><fmt:formatDate pattern="yyyy-MM-dd hh:MM:ss" value="${boardVO.reg_date}"/> </div>
+	            <div class="sparkbar" data-color="#00a65a" data-height="20">
+	            <fmt:formatDate pattern="yyyy-MM-dd hh:MM:ss" value="${boardVO.reg_date}"/> 
+	            </div>
 	          </td>
 	        </tr>
-        </c:forEach>
+        </c:forEach>       
         </tbody>
       </table>
     </div>

@@ -15,10 +15,10 @@ import java.util.Calendar;
  * 즉, 객체를 2번 생성할 필요가 없는 로직일때 사용
  * 대표적인 싱클톤객체는 Calendar(달력)클래스, DB접속클래스등이 있습니다.
  * Logger(로깅) 클래스(싱글톤)
- * @author 장효원
+ * @author User
  *
  */
-class Singleton{ //테스트용으로 만든 싱글톤 클래스
+class Singleton{ //테스트용으로 만든 싱클톤 클래스
 	private static Singleton instance = new Singleton(); // 정적필드 인스턴스 생성 
 	private Singleton(){} // private 생성자
 	public static Singleton getInstance(){ // getInstance 메서드 정의
@@ -28,7 +28,7 @@ class Singleton{ //테스트용으로 만든 싱글톤 클래스
 public class SingletonApp {
 	public static void main(String[] args) {
 		//Calendar calendar = new Calendar();//이렇게 생성하지 못합니다.
-		Calendar calendar = Calendar.getInstance();//대표적인 싱글톤 객체 사용방법
+		Calendar calendar = Calendar.getInstance();//대표적이 싱클톤 객체 사용방법
 		Singleton st1 = Singleton.getInstance(); // 싱글톤 인스턴스 생성 매서드호출
 		Singleton st2 = Singleton.getInstance();
         //Singleton st3 = new Singleton(); 
